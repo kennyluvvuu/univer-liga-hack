@@ -34,14 +34,18 @@ const app = new Elysia()
   })
   .post(
     "/register",
-    async ({ body }) => {
+    async ({ body, jwt }) => {
       const registredUser = {
         id: randomUUIDv5("chlen", "url"),
         email: body.email,
         hash: await Bun.password.hash(body.password),
       };
       users.push(registredUser);
-      return status(201, { id: registredUser.id, email: registredUser.email });
+      const token = await jwt.sign({ sub: registredUser.id });
+      return status(201, {
+        token: token,
+        user: { id: registredUser.id, email: registredUser.email },
+      });
     },
     {
       body: User,
@@ -49,7 +53,7 @@ const app = new Elysia()
   )
   .post(
     "/login",
-    async ({ body, jwt, cookie: { auth } }) => {
+    async ({ body, jwt }) => {
       let validUser = null;
       for (const user of users) {
         if (
@@ -66,12 +70,7 @@ const app = new Elysia()
       }
 
       const token = await jwt.sign({ sub: validUser.id });
-      auth.set({
-        value: token,
-        httpOnly: true,
-        secure: true,
-      });
-      return { status: "success" };
+      return { token: token, email: validUser.email };
     },
     {
       body: User,
