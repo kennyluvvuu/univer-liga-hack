@@ -5,13 +5,16 @@ import App from './App.tsx'
 import PostProvider from "./stores/posts/PostProvider.tsx";
 import './api/interceptors.ts'
 import AuthProvider from "./stores/auth/AuthProvider.tsx";
+import ToastProvider from "./stores/toast/ToastProvider.tsx";
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
       <AuthProvider>
-          <PostProvider>
-              <App />
-          </PostProvider>
+          <ToastProvider>
+              <PostProvider>
+                  <App />
+              </PostProvider>
+          </ToastProvider>
       </AuthProvider>
   </StrictMode>,
 )

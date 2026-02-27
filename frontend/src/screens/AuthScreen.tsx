@@ -1,10 +1,10 @@
-import {useState} from "react";
+import { useState, memo } from "react";
 import LoginFormComponent from "../components/LoginFormComponent.tsx";
 import SignInFormComponent from "../components/SignInFormComponent.tsx";
 
 type FormType = "login" | "signIn"
 
-export default function AuthScreen() {
+export default memo(function AuthScreen() {
     const [form, setForm] = useState<FormType>("login")
 
     return (
@@ -24,4 +24,4 @@ export default function AuthScreen() {
             {form === "login" ? <LoginFormComponent /> : <SignInFormComponent />}
         </>
     )
-}
+})

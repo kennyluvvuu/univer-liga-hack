@@ -1,17 +1,13 @@
-import {type PropsWithChildren, useEffect, useState} from "react";
-import {AuthContext} from "./AuthContext.ts";
-import type {UserI, UserCredentials} from "../../types/types.ts";
-import {authApi} from "../../api/services/auth.ts";
+import { type PropsWithChildren, useCallback, useEffect, useMemo, useState, memo } from "react";
+import { AuthContext } from "./AuthContext.ts";
+import type { UserI, UserCredentials } from "../../types/types.ts";
+import { authApi } from "../../api/services/auth.ts";
 
-export default function AuthProvider({ children }: PropsWithChildren) {
+export default memo(function AuthProvider({ children }: PropsWithChildren) {
     const [user, setUser] = useState<UserI | null>(null)
     const [isLoading, setIsLoading] = useState(true)
 
-    useEffect(() => {
-        checkAuth()
-    }, [])
-
-    const checkAuth = async () => {
+    const checkAuth = useCallback(async () => {
         const token = localStorage.getItem('token')
         if (!token) {
             setIsLoading(false)
@@ -27,48 +23,60 @@ export default function AuthProvider({ children }: PropsWithChildren) {
         } finally {
             setIsLoading(false)
         }
-    }
+    }, [])
 
-    const login = async (user: UserCredentials) => {
+    useEffect(() => {
+        checkAuth()
+    }, [checkAuth])
+
+    const login = useCallback(async (userData: UserCredentials) => {
         try {
-            const response = await authApi.login(user)
+            const response = await authApi.login(userData)
+
             if (!response.data?.token) {
                 throw new Error('Токен не получен от сервера')
             }
             localStorage.setItem('token', response.data.token)
             setUser(response.data.user)
         } catch (err) {
-            if (err instanceof Error && err.message === 'Токен не получен от сервера') {
-                throw err
+            if (typeof(err) === 'string') {
+                throw new Error('Неверный email или пароль')
             }
+
             throw new Error('Ошибка подключения к серверу')
         }
-    }
+    }, [])
 
-    const logout = async () => {
+    const logout = useCallback(async () => {
         localStorage.removeItem('token')
         setUser(null)
-    }
+    }, [])
 
-    const register = async (user: UserCredentials) => {
+    const register = useCallback(async (userData: UserCredentials) => {
         try {
-            const response = await authApi.register(user)
+            const response = await authApi.register(userData)
             if (!response.data?.token) {
                 throw new Error('Токен не получен от сервера')
             }
             localStorage.setItem('token', response.data.token)
             setUser(response.data.user)
-        } catch (err) {
-            if (err instanceof Error && err.message === 'Токен не получен от сервера') {
-                throw err
-            }
+        } catch {
             throw new Error('Ошибка подключения к серверу')
         }
-    }
+    }, [])
+
+    const contextValue = useMemo(() => ({
+        user,
+        isLoading,
+        isAuthenticated: !!user,
+        login,
+        logout,
+        register
+    }), [user, isLoading, login, logout, register])
 
     return (
-        <AuthContext value={{ user, isLoading, isAuthenticated: !!user, login, logout, register }}>
-            { children }
+        <AuthContext value={contextValue}>
+            {children}
         </AuthContext>
     )
-}
+})

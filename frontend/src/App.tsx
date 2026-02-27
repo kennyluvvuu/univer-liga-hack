@@ -1,3 +1,4 @@
+import { memo } from 'react'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import Layout from "./layout/Layout.tsx";
 import MainScreen from "./screens/MainScreens.tsx";
@@ -25,4 +26,4 @@ function App() {
   )
 }
 
-export default App
+export default memo(App)

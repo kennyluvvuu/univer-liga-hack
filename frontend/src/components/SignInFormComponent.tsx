@@ -2,12 +2,13 @@ import {type ChangeEvent, type FormEvent, useState} from "react";
 import type {UserCredentials} from "../types/types.ts";
 import useAuthContext from "../hooks/context/useAuthContext.ts";
 import {useNavigate} from "react-router-dom";
+import useToastContext from "../hooks/context/useToastContext.ts";
 
 export default function SignInFormComponent() {
     const { register } = useAuthContext()
     const navigate = useNavigate()
+    const { success, error } = useToastContext()
     const [isSubmitting, setIsSubmitting] = useState<boolean>(false)
-    const [error, setError] = useState<string>("")
     const [signInUserData, setSignInUserData] = useState<UserCredentials>({
         email: "",
         password: ""
@@ -15,15 +16,14 @@ export default function SignInFormComponent() {
 
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault()
-        setError("")
 
         if (!signInUserData.email || !signInUserData.password) {
-            setError("Заполните все поля")
+            error("Заполните все поля")
             return
         }
 
         if (signInUserData.password.length < 6) {
-            setError("Пароль должен быть не менее 6 символов")
+            error("Пароль должен быть не менее 6 символов")
             return
         }
 
@@ -32,8 +32,11 @@ export default function SignInFormComponent() {
         try {
             await register(signInUserData)
             navigate("/secure", {replace: true})
+            success("Регистрация прошла успешно")
         } catch (err) {
-            setError(err instanceof Error ? err.message : "Регистрация не удалась")
+            if (err instanceof Error) {
+                error(err.message)
+            }
         } finally {
             setIsSubmitting(false)
         }
@@ -60,7 +63,6 @@ export default function SignInFormComponent() {
                     onChange={(e: ChangeEvent<HTMLInputElement>) => setSignInUserData({ ...signInUserData, password: e.target.value })}
                     disabled={isSubmitting}
                 />
-                {error && <span className="text-red-500">{error}</span>}
                 <button
                     type="submit"
                     disabled={isSubmitting}

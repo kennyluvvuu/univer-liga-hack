@@ -2,12 +2,13 @@ import {type ChangeEvent, type FormEvent, useState} from "react";
 import type {UserCredentials} from "../types/types.ts";
 import useAuthContext from "../hooks/context/useAuthContext.ts";
 import {useNavigate} from "react-router-dom";
+import useToastContext from "../hooks/context/useToastContext.ts";
 
 export default function LoginFormComponent() {
     const { login } = useAuthContext()
+    const { success, error } = useToastContext()
     const navigate = useNavigate()
     const [isSubmitting, setIsSubmitting] = useState<boolean>(false)
-    const [error, setError] = useState<string>("")
     const [loginUserData, setLoginUserData] = useState<UserCredentials>({
         email: "",
         password: ""
@@ -15,10 +16,9 @@ export default function LoginFormComponent() {
 
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault()
-        setError("")
 
         if (!loginUserData.email || !loginUserData.password) {
-            setError("Заполните все поля")
+            error("Заполните все поля")
             return
         }
 
@@ -26,9 +26,12 @@ export default function LoginFormComponent() {
 
         try {
             await login(loginUserData)
+            success('Добро пожаловать!')
             navigate("/secure", {replace: true})
-        } catch (err) {
-            setError(err instanceof Error ? err.message : "Неверный email или пароль")
+        } catch (err: unknown) {
+            if (err instanceof Error) {
+                error(err.message)
+            }
         } finally {
             setIsSubmitting(false)
         }
@@ -55,7 +58,6 @@ export default function LoginFormComponent() {
                     onChange={(e: ChangeEvent<HTMLInputElement>) => setLoginUserData({ ...loginUserData, password: e.target.value })}
                     disabled={isSubmitting}
                 />
-                {error && <span className="text-red-500">{error}</span>}
                 <button
                     type="submit"
                     disabled={isSubmitting}
@@ -65,4 +67,4 @@ export default function LoginFormComponent() {
             </form>
         </div>
     )
-}
+}        

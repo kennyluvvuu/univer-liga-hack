@@ -1,8 +1,8 @@
-import {PostListContext} from './PostContext.ts'
-import {type PropsWithChildren, useState} from "react";
-import type {PostI} from "../../types/types.ts";
+import { PostListContext } from './PostContext.ts'
+import { type PropsWithChildren, useState, useMemo, memo } from "react";
+import type { PostI } from "../../types/types.ts";
 
-export default function PostProvider({ children }: PropsWithChildren) {
+export default memo(function PostProvider({ children }: PropsWithChildren) {
     const [posts, setPosts] = useState<PostI[]>([
         {
             id: "1",
@@ -16,9 +16,11 @@ export default function PostProvider({ children }: PropsWithChildren) {
         },
     ])
 
+    const contextValue = useMemo(() => ({ posts, setPosts }), [posts])
+
     return (
-        <PostListContext value={{ posts, setPosts }}>
-            { children }
+        <PostListContext value={contextValue}>
+            {children}
         </PostListContext>
     )
-}
+})

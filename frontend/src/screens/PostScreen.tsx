@@ -1,11 +1,12 @@
-import {useParams} from "react-router-dom";
+import { memo, useMemo } from "react";
+import { useParams } from "react-router-dom";
 import usePostContext from "../hooks/context/usePostContext.ts";
 
-export default function PostScreen() {
+export default memo(function PostScreen() {
     const { id } = useParams()
     const { posts } = usePostContext()
 
-    const post = posts.find((p) => p.id === id)
+    const post = useMemo(() => posts.find((p) => p.id === id), [posts, id])
 
     if (!post) return <h1>Пост не найден</h1>
 
@@ -15,4 +16,4 @@ export default function PostScreen() {
             <p>{ post.content }</p>
         </>
     )
-}
+})

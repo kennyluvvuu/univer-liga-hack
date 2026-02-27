@@ -1,7 +1,8 @@
+import { memo } from "react";
 import usePostContext from "../hooks/context/usePostContext.ts";
 import PostComponent from "./PostComponent.tsx";
 
-export default function PostListComponent() {
+export default memo(function PostListComponent() {
     const { posts } = usePostContext()
 
     return (
@@ -11,4 +12,4 @@ export default function PostListComponent() {
             ))}
         </section>
     )
-}
+})

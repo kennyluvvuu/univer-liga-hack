@@ -1,7 +1,8 @@
+import { memo } from "react";
 import { Link } from "react-router-dom";
 import LogoutComponent from "../components/LogoutComponent.tsx";
 
-export default function Header() {
+export default memo(function Header() {
     return (
         <header className="flex justify-between border-b-2 mb-5">
             <div className="flex gap-x-1">
@@ -12,4 +13,4 @@ export default function Header() {
             <Link to="/secure">Secure</Link>
         </header>
     )
-}
+})
