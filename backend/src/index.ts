@@ -4,7 +4,12 @@ import { authPlugin } from "./plugins/auth.plugin";
 import { authRoutes } from "./routes/auth.routes";
 import { users } from "./services/user.service.mock";
 import cors from "@elysiajs/cors";
+import UserService from "./services/user.serivce";
+import connectDb from "./services/db";
 
+console.log(process.env.MONGO_URL);
+await connectDb(process.env.MONGO_URL || "");
+const userService = new UserService();
 const app = new Elysia()
     .use(
         logixlysia({
@@ -23,15 +28,15 @@ const app = new Elysia()
         return { users: users };
     })
     .get("/me", async ({ payload }) => {
-        if (!payload)
+        if (!payload || !payload.sub)
             return status(401, {
                 error: "Unauthorized",
             });
-        const userData = users.find((user) => user.id === payload.sub);
+        const userData = await userService.getById(payload.sub);
         if (!userData) return status(404, "Not Found");
-        return { id: userData.id, email: userData.email };
+        return { id: userData._id.toString(), email: userData.email };
     })
-    .mount("/auth", authRoutes)
+    .mount("/auth", authRoutes(userService))
     .listen("8080");
 
 export type Server = typeof app;
