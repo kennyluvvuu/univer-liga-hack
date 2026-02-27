@@ -10,8 +10,15 @@ export const authPlugin = new Elysia()
         }),
     )
     .derive({ as: "global" }, async ({ jwt, headers: { authorization } }) => {
-        if (!authorization) return { payload: null };
+        if (!authorization) return { payload: false };
         const [, token] = authorization.split(" ");
         const payload = await jwt.verify(token);
         return { payload };
+    })
+    .macro({
+        auth: (enabled: boolean) => ({
+            beforeHandle({ payload }) {
+                if (enabled && !payload) return { error: "Unauthorized" };
+            },
+        }),
     });

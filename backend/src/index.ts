@@ -19,6 +19,9 @@ const app = new Elysia()
         }),
     )
     .use(authPlugin)
+    .get("/users", async () => {
+        return { users: users };
+    })
     .get("/me", async ({ payload }) => {
         if (!payload)
             return status(401, {
