@@ -4,9 +4,10 @@ import useAuthContext from "../hooks/context/useAuthContext.ts";
 import {useNavigate} from "react-router-dom";
 
 export default function SignInFormComponent() {
-    const { register, isLoading } = useAuthContext()
+    const { register } = useAuthContext()
     const navigate = useNavigate()
     const [isSubmitting, setIsSubmitting] = useState<boolean>(false)
+    const [error, setError] = useState<string>("")
     const [signInUserData, setSignInUserData] = useState<UserCredentials>({
         email: "",
         password: ""
@@ -14,13 +15,25 @@ export default function SignInFormComponent() {
 
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault()
+        setError("")
+
+        if (!signInUserData.email || !signInUserData.password) {
+            setError("Заполните все поля")
+            return
+        }
+
+        if (signInUserData.password.length < 6) {
+            setError("Пароль должен быть не менее 6 символов")
+            return
+        }
+
+        setIsSubmitting(true)
 
         try {
             await register(signInUserData)
             navigate("/secure", {replace: true})
         } catch (err) {
-            console.error("SignIn failed:", err)
-            alert("Регистрация не удалась")
+            setError(err instanceof Error ? err.message : "Регистрация не удалась")
         } finally {
             setIsSubmitting(false)
         }
@@ -36,18 +49,23 @@ export default function SignInFormComponent() {
                 <input
                     type="email"
                     placeholder="email..."
+                    value={signInUserData.email}
                     onChange={(e: ChangeEvent<HTMLInputElement>) => setSignInUserData({ ...signInUserData, email: e.target.value })}
+                    disabled={isSubmitting}
                 />
                 <input
                     type="password"
                     placeholder="password..."
+                    value={signInUserData.password}
                     onChange={(e: ChangeEvent<HTMLInputElement>) => setSignInUserData({ ...signInUserData, password: e.target.value })}
+                    disabled={isSubmitting}
                 />
+                {error && <span className="text-red-500">{error}</span>}
                 <button
                     type="submit"
-                    disabled={isLoading}
+                    disabled={isSubmitting}
                 >
-                    {isLoading || isSubmitting ? "Загрузка" : "Зарегестрироваться"}
+                    {isSubmitting ? "Загрузка..." : "Зарегистрироваться"}
                 </button>
             </form>
         </div>

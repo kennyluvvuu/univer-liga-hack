@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import LogoutComponent from "../components/LogoutComponent.tsx";
 
 export default function Header() {
     return (
@@ -7,6 +8,7 @@ export default function Header() {
                 <Link to="/">Home</Link>
                 <Link to="/auth">Auth</Link>
             </div>
+            <LogoutComponent />
             <Link to="/secure">Secure</Link>
         </header>
     )

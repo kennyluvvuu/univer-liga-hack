@@ -4,9 +4,10 @@ import useAuthContext from "../hooks/context/useAuthContext.ts";
 import {useNavigate} from "react-router-dom";
 
 export default function LoginFormComponent() {
-    const { login, isLoading } = useAuthContext()
+    const { login } = useAuthContext()
     const navigate = useNavigate()
     const [isSubmitting, setIsSubmitting] = useState<boolean>(false)
+    const [error, setError] = useState<string>("")
     const [loginUserData, setLoginUserData] = useState<UserCredentials>({
         email: "",
         password: ""
@@ -14,14 +15,20 @@ export default function LoginFormComponent() {
 
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault()
+        setError("")
+
+        if (!loginUserData.email || !loginUserData.password) {
+            setError("Заполните все поля")
+            return
+        }
+
         setIsSubmitting(true)
 
         try {
             await login(loginUserData)
             navigate("/secure", {replace: true})
         } catch (err) {
-            console.error("Login failed:", err)
-            alert("Неверный email или пароль")
+            setError(err instanceof Error ? err.message : "Неверный email или пароль")
         } finally {
             setIsSubmitting(false)
         }
@@ -37,18 +44,23 @@ export default function LoginFormComponent() {
                 <input
                     type="email"
                     placeholder="email..."
+                    value={loginUserData.email}
                     onChange={(e: ChangeEvent<HTMLInputElement>) => setLoginUserData({ ...loginUserData, email: e.target.value })}
+                    disabled={isSubmitting}
                 />
                 <input
                     type="password"
                     placeholder="password..."
+                    value={loginUserData.password}
                     onChange={(e: ChangeEvent<HTMLInputElement>) => setLoginUserData({ ...loginUserData, password: e.target.value })}
+                    disabled={isSubmitting}
                 />
+                {error && <span className="text-red-500">{error}</span>}
                 <button
                     type="submit"
-                    disabled={isLoading}
+                    disabled={isSubmitting}
                 >
-                    {isLoading || isSubmitting ? "Загрузка" : "Войти"}
+                    {isSubmitting ? "Загрузка..." : "Войти"}
                 </button>
             </form>
         </div>

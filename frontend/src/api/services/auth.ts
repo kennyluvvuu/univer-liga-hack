@@ -9,6 +9,5 @@ export interface AuthResponse {
 export const authApi = {
     login: (data: UserCredentials) => api.post<AuthResponse>('/auth/login', data),
     register: (data: UserCredentials) => api.post<AuthResponse>('/auth/register', data),
-    logout: () => api.post<void>('/auth/logout'),
-    getProfile: () => api.get<UserI>('/auth/profile')
+    getProfile: () => api.get<UserI>('/me')
 }

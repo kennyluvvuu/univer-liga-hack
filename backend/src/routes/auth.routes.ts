@@ -54,7 +54,7 @@ export const authRoutes = new Elysia()
       }
 
       const token = await jwt.sign({ sub: validUser.id });
-      return { token: token, email: validUser.email };
+      return { token: token, user: { id: validUser.id, email: validUser.email } };
     },
     {
       body: User,
