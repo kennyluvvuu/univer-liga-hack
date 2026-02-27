@@ -1,15 +1,16 @@
+import { useCallback, memo } from "react";
 import useAuthContext from "../hooks/context/useAuthContext.ts";
 
-export default function LogoutComponent() {
+export default memo(function LogoutComponent() {
     const { isAuthenticated, logout } = useAuthContext()
 
-    const handleLogout = async () => {
+    const handleLogout = useCallback(async () => {
         try {
             await logout()
         } catch (error) {
             console.log(error)
         }
-    }
+    }, [logout])
 
     if (!isAuthenticated) return null
 
@@ -18,4 +19,4 @@ export default function LogoutComponent() {
             onClick={handleLogout}
         >logout</p>
     )
-}
+})
