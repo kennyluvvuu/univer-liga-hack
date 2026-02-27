@@ -1,5 +1,5 @@
 import {type ChangeEvent, type FormEvent, useState} from "react";
-import type {UserI} from "../types/types.ts";
+import type {UserCredentials} from "../types/types.ts";
 import useAuthContext from "../hooks/context/useAuthContext.ts";
 import {useNavigate} from "react-router-dom";
 
@@ -7,7 +7,7 @@ export default function SignInFormComponent() {
     const { register, isLoading } = useAuthContext()
     const navigate = useNavigate()
     const [isSubmitting, setIsSubmitting] = useState<boolean>(false)
-    const [signInUserData, setSignInUserData] = useState<UserI>({
+    const [signInUserData, setSignInUserData] = useState<UserCredentials>({
         email: "",
         password: ""
     })

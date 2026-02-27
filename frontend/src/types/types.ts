@@ -5,6 +5,11 @@ export interface PostI {
 }
 
 export interface UserI {
+    id?: string
+    email: string
+}
+
+export interface UserCredentials {
     email: string
     password: string
 }

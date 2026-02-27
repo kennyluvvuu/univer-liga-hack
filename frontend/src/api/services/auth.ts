@@ -1,10 +1,14 @@
-import { api } from "../axios.ts";
-import type { UserI } from "../../types/types.ts";
+import {api} from "../axios.ts";
+import type {UserI, UserCredentials} from "../../types/types.ts";
+
+export interface AuthResponse {
+    token: string
+    user: UserI
+}
 
 export const authApi = {
-  login: (data: UserI) => api.post<void>("/login", data),
-  register: (data: UserI) => api.post<void>("/register", data),
-  logout: () => api.post<void>("/auth/logout"),
-  getProfile: () => api.get<UserI>("/me"),
-};
-
+    login: (data: UserCredentials) => api.post<AuthResponse>('/auth/login', data),
+    register: (data: UserCredentials) => api.post<AuthResponse>('/auth/register', data),
+    logout: () => api.post<void>('/auth/logout'),
+    getProfile: () => api.get<UserI>('/auth/profile')
+}
