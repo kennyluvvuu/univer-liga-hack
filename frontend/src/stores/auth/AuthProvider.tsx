@@ -21,7 +21,7 @@ export default function AuthProvider({ children }: PropsWithChildren) {
         try {
             const { data } = await authApi.getProfile()
             setUser(data)
-        } catch (err) {
+        } catch {
             localStorage.removeItem('token')
             setUser(null)
         } finally {
@@ -30,21 +30,40 @@ export default function AuthProvider({ children }: PropsWithChildren) {
     }
 
     const login = async (user: UserCredentials) => {
-        const { data } = await authApi.login(user)
-        localStorage.setItem('token', data.token)
-        setUser(data.user)
+        try {
+            const response = await authApi.login(user)
+            if (!response.data?.token) {
+                throw new Error('Токен не получен от сервера')
+            }
+            localStorage.setItem('token', response.data.token)
+            setUser(response.data.user)
+        } catch (err) {
+            if (err instanceof Error && err.message === 'Токен не получен от сервера') {
+                throw err
+            }
+            throw new Error('Ошибка подключения к серверу')
+        }
     }
 
     const logout = async () => {
-        await authApi.logout()
         localStorage.removeItem('token')
         setUser(null)
     }
 
     const register = async (user: UserCredentials) => {
-        const { data } = await authApi.register(user)
-        localStorage.setItem('token', data.token)
-        setUser(data.user)
+        try {
+            const response = await authApi.register(user)
+            if (!response.data?.token) {
+                throw new Error('Токен не получен от сервера')
+            }
+            localStorage.setItem('token', response.data.token)
+            setUser(response.data.user)
+        } catch (err) {
+            if (err instanceof Error && err.message === 'Токен не получен от сервера') {
+                throw err
+            }
+            throw new Error('Ошибка подключения к серверу')
+        }
     }
 
     return (

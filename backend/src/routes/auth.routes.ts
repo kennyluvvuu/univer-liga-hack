@@ -50,13 +50,13 @@ export const authRoutes = new Elysia()
                 return status(401, "Unauthorized");
             }
 
-            const token = await jwt.sign({ sub: validUser.id });
-            return {
+      const token = await jwt.sign({ sub: validUser.id });
+      return {
                 token: token,
                 user: { id: validUser.id, email: validUser.email },
             };
-        },
-        {
-            body: User,
-        },
-    );
+    },
+    {
+      body: User,
+    },
+  );
