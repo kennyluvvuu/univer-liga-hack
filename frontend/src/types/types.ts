@@ -1,15 +1,21 @@
-export interface PostI {
-    title: string
-    content: string
+export interface EmployeeI {
     id: string
-}
-
-export interface UserI {
-    id?: string
+    name: string
+    role: "employee" | "director"
+    postition: string
     email: string
+    id_CRM: string
+    avatar: string
+    tasks: string[]
 }
 
-export interface UserCredentials {
+export interface CredentialsI {
     email: string
     password: string
+}
+
+export interface TaskI {
+    title: string
+    description: string
+    
 }
