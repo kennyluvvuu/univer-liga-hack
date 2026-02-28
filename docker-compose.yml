@@ -16,7 +16,7 @@ services:
         container_name: mongo-db-hack
         environment:
             - MONGO_INITDB_ROOT_USERNAME=${MONGODB_USER}
-            - MONGODB_INITDB_ROOT_PASSWORD=${MONGODB_PASSWD}
+            - MONGO_INITDB_ROOT_PASSWORD=${MONGODB_PASSWD}
             - MONGO_INITDB_DATABASE=${MONGODB_DB}
         volumes:
             - ./mongo-data:/data/db
