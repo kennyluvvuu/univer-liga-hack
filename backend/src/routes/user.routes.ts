@@ -68,7 +68,11 @@ export const userRoutes = (
                 }
 
                 const user = await userService.getById(id);
-                if (!user) return status(404, { message: "Not found" });
+                if (!user)
+                    return status(404, {
+                        message:
+                            "Пользователя на которого идет обзор не существует",
+                    });
 
                 const userTask = await tasksService.getById(body.taskId);
                 if (!userTask)
