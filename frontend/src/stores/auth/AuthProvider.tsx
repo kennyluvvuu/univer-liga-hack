@@ -1,6 +1,7 @@
 import { type PropsWithChildren, useCallback, useEffect, useMemo, useState, memo } from "react";
 import { AuthContext } from "./AuthContext.ts";
-import type { UserI, UserCredentials } from "../../types/types.ts";
+import type { CredentialsI } from "../../types/types.ts";
+import type { UserI } from "../../api/services/auth.ts";
 import { authApi } from "../../api/services/auth.ts";
 
 export default memo(function AuthProvider({ children }: PropsWithChildren) {
@@ -29,7 +30,7 @@ export default memo(function AuthProvider({ children }: PropsWithChildren) {
         checkAuth()
     }, [checkAuth])
 
-    const login = useCallback(async (userData: UserCredentials) => {
+    const login = useCallback(async (userData: CredentialsI) => {
         try {
             const response = await authApi.login(userData)
 
@@ -52,7 +53,7 @@ export default memo(function AuthProvider({ children }: PropsWithChildren) {
         setUser(null)
     }, [])
 
-    const register = useCallback(async (userData: UserCredentials) => {
+    const register = useCallback(async (userData: CredentialsI) => {
         try {
             const response = await authApi.register(userData)
             if (!response.data?.token) {
