@@ -12,7 +12,15 @@ export default class CommentService {
             tags: comment.tags,
         });
 
-        return newComment;
+        return {
+            id: newComment._id.toString(),
+            recipientId: newComment.recipientId.toString(),
+            senderId: newComment.senderId.toString(),
+            taskId: newComment.taskId.toString(),
+            score: newComment.score,
+            comment: newComment.comment,
+            tags: newComment.tags,
+        };
     }
 
     async getByRecipientId(recipientId: string) {
