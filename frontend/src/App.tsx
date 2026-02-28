@@ -2,11 +2,11 @@ import { memo } from 'react'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import Layout from "./layout/Layout.tsx";
 import MainScreen from "./screens/MainScreens.tsx";
-import SecuredScreen from "./screens/SecuredScreen.tsx";
 import NotFoundScreen from "./screens/NotFoundScreen.tsx";
 import AuthScreen from "./screens/AuthScreen.tsx";
-import PostScreen from "./screens/PostScreen.tsx";
+import ProfileScreen from "./screens/ProfileScreen.tsx";
 import ProtectedRoute from "./ProtectedRoute.tsx";
+import ReviewScreen from './screens/ReviewScreen.tsx';
 
 function App() {
   return (
@@ -14,10 +14,10 @@ function App() {
           <Routes>
               <Route path="/" element={<Layout />}>
                   <Route index element={<MainScreen />} />
-                  <Route path="post/:id" element={<PostScreen />} />
                   <Route path="auth" element={<AuthScreen />} />
+                  <Route path="profile" element={<ProfileScreen />} />
                   <Route element={<ProtectedRoute />}>
-                      <Route path="secure" element={<SecuredScreen />} />
+                      <Route path="employee/:id" element={<ReviewScreen />} />
                   </Route>
                   <Route path="*" element={<NotFoundScreen />} />
               </Route>
