@@ -8,7 +8,7 @@ COPY frontend/package.json frontend/bun.lock* ./
 RUN bun install
 
 COPY frontend/ ./
-RUN bun run build
+RUN bunx vite build
 
 # Production with Caddy
 FROM caddy:alpine
