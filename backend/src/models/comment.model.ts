@@ -6,6 +6,7 @@ export const CommentSchema = new Schema({
     taskId: { type: Types.ObjectId, ref: "Task", required: true },
     score: { type: Number, required: true },
     comment: { type: String, required: true },
+    anon: { type: Boolean, required: true },
     tags: [
         {
             title: { type: String, required: true },
