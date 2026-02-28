@@ -21,9 +21,10 @@ export default class TaskService {
 
     async getByUserId(userId: string) {
         const tasksList = await TaskModel.find({ userId }).lean();
-        return tasksList.map(({ _id, ...t }) => ({
+        return tasksList.map(({ __v, _id, ...t }) => ({
             ...t,
             id: _id.toString(),
+            userId: userId.toString(),
         }));
     }
 

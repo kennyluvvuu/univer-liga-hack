@@ -15,7 +15,7 @@ export const userRoutes = (
         .get("/me", async ({ payload, status }) => {
             if (!payload || !payload.sub)
                 return status(401, {
-                    error: "Unauthorized",
+                    message: "Unauthorized",
                 });
             const userData = await userService.getById(payload.sub);
             if (!userData) return status(404, "Not Found");
@@ -24,24 +24,36 @@ export const userRoutes = (
         .get("/tasks", async ({ payload, status }) => {
             if (!payload || !payload.sub)
                 return status(401, {
-                    error: "Unauthorized",
+                    message: "Unauthorized",
                 });
             const userTasks = await tasksService.getByUserId(payload.sub);
             if (userTasks.length < 0)
                 return status(404, { message: "У вас нет задач" });
             return userTasks;
         })
-        .get("/employees", async () => {
+        .get("/employees", async ({ payload, status }) => {
+            if (!payload || !payload.sub)
+                return status(401, {
+                    message: "Unauthorized",
+                });
             return userService.list();
         })
-        .get("/employees/:id", async ({ status, params: { id } }) => {
+        .get("/employees/:id", async ({ payload, status, params: { id } }) => {
+            if (!payload || !payload.sub)
+                return status(401, {
+                    message: "Unauthorized",
+                });
             const user = await userService.getById(id);
             if (!user) return status(404, { message: "Not found" });
             return user;
         })
         .post(
             "/employees/:id/review",
-            async ({ status, params: { id }, body }) => {
+            async ({ payload, status, params: { id }, body }) => {
+                if (!payload || !payload.sub)
+                    return status(401, {
+                        message: "Unauthorized",
+                    });
                 const user = await userService.getById(id);
                 const avaliableReview = await commentService.getByTaskId(
                     body.taskId,

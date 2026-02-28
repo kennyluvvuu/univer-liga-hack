@@ -26,7 +26,7 @@ const app = new Elysia()
         }),
     )
     .use(cors())
-    .use(userRoutes(userService, commentService, tasksService))
+    .mount(userRoutes(userService, commentService, tasksService))
     .mount("/auth", authRoutes(userService))
     .listen({
         port: 8080,
