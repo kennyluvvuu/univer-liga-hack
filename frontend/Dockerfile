@@ -1,5 +1,5 @@
 # Build frontend
-FROM oven/bun:alpine AS frontend-builder
+FROM oven/bun:latest AS frontend-builder
 
 WORKDIR /app
 
