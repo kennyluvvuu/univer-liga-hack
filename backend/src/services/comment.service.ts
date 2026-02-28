@@ -22,30 +22,38 @@ export default class CommentService {
             comment: newComment.comment,
             anon: newComment.anon,
             tags: newComment.tags,
+            createdAt: newComment.createdAt,
+            updatedAt: newComment.updatedAt,
         };
     }
 
     async getByRecipientId(recipientId: string) {
         const commentsList = await CommentModel.find({ recipientId }).lean();
-        return commentsList.map(({ _id, ...c }) => ({
+        return commentsList.map(({ _id, createdAt, updatedAt, ...c }) => ({
             ...c,
             id: _id.toString(),
+            createdAt,
+            updatedAt,
         }));
     }
 
     async getBySenderId(senderId: string) {
         const commentsList = await CommentModel.find({ senderId }).lean();
-        return commentsList.map(({ _id, ...c }) => ({
+        return commentsList.map(({ _id, createdAt, updatedAt, ...c }) => ({
             ...c,
             id: _id.toString(),
+            createdAt,
+            updatedAt,
         }));
     }
 
     async getByTaskId(taskId: string) {
         const commentsList = await CommentModel.find({ taskId }).lean();
-        return commentsList.map(({ _id, ...c }) => ({
+        return commentsList.map(({ _id, createdAt, updatedAt, ...c }) => ({
             ...c,
             id: _id.toString(),
+            createdAt,
+            updatedAt,
         }));
     }
 
