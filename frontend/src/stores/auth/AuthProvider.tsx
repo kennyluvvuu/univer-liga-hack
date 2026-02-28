@@ -1,10 +1,17 @@
 import { type PropsWithChildren, useCallback, useEffect, useMemo, useState, memo } from "react";
 import { AuthContext } from "./AuthContext.ts";
-import type { UserI, UserCredentials } from "../../types/types.ts";
+import type { UserI, CredentialsI } from "../../types/types.ts";
 import { authApi } from "../../api/services/auth.ts";
 
 export default memo(function AuthProvider({ children }: PropsWithChildren) {
-    const [user, setUser] = useState<UserI | null>(null)
+    const [user, setUser] = useState<UserI | null>({
+                id: '2',
+                name: 'Jane Smith',
+                role: 'director',
+                department: 'HR',
+                email: 'jane.smith@example.com',
+                avatar: null
+            })
     const [isLoading, setIsLoading] = useState(true)
 
     const checkAuth = useCallback(async () => {
@@ -29,9 +36,9 @@ export default memo(function AuthProvider({ children }: PropsWithChildren) {
         checkAuth()
     }, [checkAuth])
 
-    const login = useCallback(async (userData: UserCredentials) => {
+    const login = useCallback(async (credentials: CredentialsI) => {
         try {
-            const response = await authApi.login(userData)
+            const response = await authApi.login(credentials)
 
             if (!response.data?.token) {
                 throw new Error('Токен не получен от сервера')
@@ -52,9 +59,9 @@ export default memo(function AuthProvider({ children }: PropsWithChildren) {
         setUser(null)
     }, [])
 
-    const register = useCallback(async (userData: UserCredentials) => {
+    const register = useCallback(async (credentials: CredentialsI) => {
         try {
-            const response = await authApi.register(userData)
+            const response = await authApi.register(credentials)
             if (!response.data?.token) {
                 throw new Error('Токен не получен от сервера')
             }

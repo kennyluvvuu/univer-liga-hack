@@ -1,11 +1,9 @@
 import { memo } from "react";
-import PostListComponent from "../components/PostListComponent.tsx";
-import InfoBannerComponent from "../components/InfoBannerComponent.tsx";
+import PostListComponent from "../components/UserListComponent.tsx";
 
 export default memo(function MainScreen() {
     return (
         <>
-            <InfoBannerComponent />
             <PostListComponent />
         </>
     )

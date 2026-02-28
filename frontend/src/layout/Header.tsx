@@ -5,12 +5,11 @@ import LogoutComponent from "../components/LogoutComponent.tsx";
 export default memo(function Header() {
     return (
         <header className="flex justify-between border-b-2 mb-5">
-            <div className="flex gap-x-1">
-                <Link to="/">Home</Link>
-                <Link to="/auth">Auth</Link>
-            </div>
-            <LogoutComponent />
-            <Link to="/secure">Secure</Link>
+            <Link to="/">Home</Link>
+            <nav>
+                <Link to="/profile">Profile</Link>
+                <LogoutComponent />
+            </nav>
         </header>
     )
 })

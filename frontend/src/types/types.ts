@@ -1,15 +1,17 @@
-export interface PostI {
-    title: string
-    content: string
-    id: string
-}
+export type UserRoleI = "employee" | "director"
+
+export type UserAvatarI = string | null
 
 export interface UserI {
-    id?: string
+    id: string
+    name: string
+    role: UserRoleI
+    department: string
     email: string
+    avatar: UserAvatarI
 }
 
-export interface UserCredentials {
+export interface CredentialsI {
     email: string
     password: string
 }
