@@ -1,0 +1,13 @@
+services:
+    db:
+        image: mongo:latest
+        container_name: mongo-db-hack
+        environment:
+            - MONGO_INITDB_ROOT_USERNAME=${MONGODB_USER}
+            - MONGO_INITDB_ROOT_PASSWORD=${MONGODB_PASSWD}
+            - MONGO_INITDB_DATABASE=${MONGODB_DB}
+        ports:
+            - "27017:27017"
+        volumes:
+            - ./mongo-data:/data/db
+        restart: unless-stopped

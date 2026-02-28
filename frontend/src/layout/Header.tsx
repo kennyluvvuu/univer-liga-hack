@@ -1,6 +1,7 @@
-import { memo } from "react";
-import { Link } from "react-router-dom";
-import LogoutComponent from "../components/LogoutComponent.tsx";
+import { memo } from "react"
+import NavLinks from "@/components/NavLinks"
+import UserMenu from "@/components/UserMenu"
+import { Building2 } from "lucide-react"
 
 export default memo(function Header() {
     return (
