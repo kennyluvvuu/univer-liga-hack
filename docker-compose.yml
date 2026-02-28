@@ -4,51 +4,39 @@ services:
             context: ./backend
             dockerfile: Dockerfile
         container_name: backend
-        ports:
-            - "8080:8080"
         environment:
-            - NODE_ENV=development
+            - NODE_ENV=production
             - MONGO_URL=mongodb://${MONGODB_USER}:${MONGODB_PASSWD}@mongo-db-hack:27017/${MONGODB_DB}
         depends_on:
             - db
-
-    frontend:
-        build:
-            context: ./frontend
-            dockerfile: Dockerfile
-        container_name: frontend
-        ports:
-            - "5173:5173"
-        environment:
-            - NODE_ENV=development
-            - VITE_API_URL=${VITE_API_URL}
-        depends_on:
-            - backend
+        restart: unless-stopped
 
     db:
         image: mongo:latest
         container_name: mongo-db-hack
-        ports:
-            - "27017:27017"
         environment:
             - MONGO_INITDB_ROOT_USERNAME=${MONGODB_USER}
             - MONGO_INITDB_ROOT_PASSWORD=${MONGODB_PASSWD}
             - MONGO_INITDB_DATABASE=${MONGODB_DB}
         volumes:
             - ./mongo-data:/data/db
+        restart: unless-stopped
 
     caddy:
-        image: caddy:latest
+        build:
+            context: .
+            dockerfile: frontend/Dockerfile
         container_name: caddy
         restart: unless-stopped
         ports:
             - "80:80"
             - "443:443"
-            - "443:443/udp" # HTTP/3
+            - "443:443/udp"
         volumes:
-            - ./Caddyfile:/etc/caddy/Caddyfile # optional static files
-            - caddy_data:/data # TLS certs (persist this!)
+            - caddy_data:/data
             - caddy_config:/config
+        depends_on:
+            - backend
 
 volumes:
     caddy_data:
