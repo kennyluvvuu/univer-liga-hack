@@ -29,7 +29,13 @@ export default class TaskService {
     }
 
     async getById(id: string) {
-        return TaskModel.findById(id).lean();
+        const task = await TaskModel.findById(id).lean();
+        if (!task) return null;
+        return {
+            ...task,
+            id: task._id.toString(),
+            userId: task.userId.toString(),
+        };
     }
 
     async delete(id: string) {
