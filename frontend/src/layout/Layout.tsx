@@ -7,7 +7,7 @@ export default memo(function Layout() {
     return (
         <>
             <Header />
-            <main className="flex-1 mx-5">
+            <main className="flex-1 w-[45%] mx-auto">
                 <Outlet />
             </main>
             <Footer />
