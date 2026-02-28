@@ -1,22 +1,18 @@
-# Build stage
-FROM oven/bun:alpine AS builder
+# Build frontend
+FROM oven/bun:alpine AS frontend-builder
 
 WORKDIR /app
 
-COPY package.json ./
+COPY package.json bun.lock* ./
 RUN bun install
 
 COPY . .
-
-ARG VITE_API_URL=/api
-ENV VITE_API_URL=$VITE_API_URL
-
 RUN bun run build
 
-# Production stage - serve static files with Caddy
+# Production with Caddy
 FROM caddy:alpine
 
-COPY --from=builder /app/dist /usr/share/caddy
 COPY Caddyfile.prod /etc/caddy/Caddyfile
+COPY --from=frontend-builder /app/dist /usr/share/caddy
 
-EXPOSE 80
+EXPOSE 80 443

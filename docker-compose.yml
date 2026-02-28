@@ -23,7 +23,9 @@ services:
         restart: unless-stopped
 
     caddy:
-        image: caddy:latest
+        build:
+            context: .
+            dockerfile: frontend/Dockerfile
         container_name: caddy
         restart: unless-stopped
         ports:
@@ -31,7 +33,6 @@ services:
             - "443:443"
             - "443:443/udp"
         volumes:
-            - ./Caddyfile:/etc/caddy/Caddyfile
             - caddy_data:/data
             - caddy_config:/config
         depends_on:
