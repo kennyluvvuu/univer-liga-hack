@@ -2,13 +2,11 @@ FROM oven/bun:alpine
 
 WORKDIR /app
 
-# DEPS
 COPY package.json ./
-RUN bun install
+RUN bun install --production
 
-# Build
 COPY . .
 
 EXPOSE 8080
 
-CMD ["bun", "run", "dev"]
+CMD ["bun", "run", "start"]
