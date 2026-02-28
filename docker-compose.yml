@@ -35,3 +35,20 @@ services:
             - MONGO_INITDB_DATABASE=${MONGODB_DB}
         volumes:
             - ./mongo-data:/data/db
+
+    caddy:
+        image: caddy:latest
+        container_name: caddy
+        restart: unless-stopped
+        ports:
+            - "80:80"
+            - "443:443"
+            - "443:443/udp" # HTTP/3
+        volumes:
+            - ./Caddyfile:/etc/caddy/Caddyfile # optional static files
+            - caddy_data:/data # TLS certs (persist this!)
+            - caddy_config:/config
+
+volumes:
+    caddy_data:
+    caddy_config:

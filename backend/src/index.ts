@@ -18,11 +18,7 @@ const app = new Elysia()
             },
         }),
     )
-    .use(
-        cors({
-            origin: "http://localhost:5173",
-        }),
-    )
+    .use(cors())
     .use(authPlugin)
     .get("/users", async () => {
         return { users: users };
@@ -37,6 +33,9 @@ const app = new Elysia()
         return { id: userData._id.toString(), email: userData.email };
     })
     .mount("/auth", authRoutes(userService))
-    .listen("8080");
+    .listen({
+        port: 8080,
+        hostname: "0.0.0.0",
+    });
 
 export type Server = typeof app;
