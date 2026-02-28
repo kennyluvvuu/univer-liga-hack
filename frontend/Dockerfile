@@ -1,14 +1,22 @@
-FROM oven/bun:alpine
+# Build stage
+FROM oven/bun:alpine AS builder
 
 WORKDIR /app
 
-# DEPS
 COPY package.json ./
 RUN bun install
 
-# Build
 COPY . .
 
-EXPOSE 5173
+ARG VITE_API_URL=/api
+ENV VITE_API_URL=$VITE_API_URL
 
-CMD ["bun", "run", "dev", "--host", "0.0.0.0"]
+RUN bun run build
+
+# Production stage - serve static files with Caddy
+FROM caddy:alpine
+
+COPY --from=builder /app/dist /usr/share/caddy
+COPY Caddyfile.prod /etc/caddy/Caddyfile
+
+EXPOSE 80
