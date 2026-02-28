@@ -96,4 +96,19 @@ export const userRoutes = (
             {
                 body: ReviewSchema,
             },
+        )
+        .get(
+            "/employees/:id/reviews",
+            async ({ payload, status, params: { id } }) => {
+                if (!payload || !payload.sub)
+                    return status(401, {
+                        message: "Unauthorized",
+                    });
+                const userReviews = await commentService.getByRecipientId(id);
+                if (userReviews.length === 0)
+                    return status(404, {
+                        message: "Нет отзывов",
+                    });
+                return userReviews;
+            },
         );
