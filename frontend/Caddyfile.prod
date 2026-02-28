@@ -1,6 +1,5 @@
-localhost {
-    handle /api/* {
-        uri strip_prefix /api
+hello-ikity.duckdns.org {
+    handle_path /api/* {
         reverse_proxy backend:8080
     }
 

@@ -1,14 +1,18 @@
-FROM oven/bun:alpine
+# Build frontend
+FROM oven/bun:alpine AS frontend-builder
 
 WORKDIR /app
 
-# DEPS
-COPY package.json ./
+COPY frontend/package.json frontend/bun.lock* ./
 RUN bun install
 
-# Build
-COPY . .
+COPY frontend/ ./
+RUN bun run build
 
-EXPOSE 5173
+# Production with Caddy
+FROM caddy:alpine
 
-CMD ["bun", "run", "dev", "--host", "0.0.0.0"]
+COPY frontend/Caddyfile.prod /etc/caddy/Caddyfile
+COPY --from=frontend-builder /app/dist /usr/share/caddy
+
+EXPOSE 80 443
