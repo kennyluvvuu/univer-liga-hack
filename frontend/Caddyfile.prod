@@ -1,4 +1,4 @@
-hello-ikity.duckdns.org {
+helloikity.duckdns.org {
     handle_path /api/* {
         reverse_proxy backend:8080
     }
