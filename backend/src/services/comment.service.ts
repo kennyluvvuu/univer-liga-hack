@@ -56,6 +56,7 @@ export default class CommentService {
     }
 
     async delete(id: string) {
-        return CommentModel.deleteOne({ _id: id });
+        const result = await CommentModel.deleteOne({ _id: id });
+        return result.deletedCount > 0 ? true : false;
     }
 }

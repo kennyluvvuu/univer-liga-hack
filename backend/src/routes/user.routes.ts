@@ -31,6 +31,31 @@ export const userRoutes = (
                 return status(404, { message: "Нет отзывов" });
             return myReviews;
         })
+        .delete(
+            "/my/reviews/:id",
+            async ({ payload, status, params: { id } }) => {
+                if (!payload || !payload.sub)
+                    return status(401, {
+                        message: "Unauthorized",
+                    });
+                const myReviews = await commentService.getBySenderId(
+                    payload.sub,
+                );
+                const myReviewsIds = myReviews.map((r) => r.id);
+                if (myReviews.length === 0)
+                    return status(404, { message: "Нет отзывов" });
+                if (!myReviewsIds.includes(id))
+                    return status(409, {
+                        message: "Нельзя удалить чужой отзыв",
+                    });
+                const ok = await commentService.delete(id);
+                if (!ok)
+                    return status(404, {
+                        message: "Такого отзыва не существует",
+                    });
+                return status(200);
+            },
+        )
         .get("/tasks", async ({ payload, status }) => {
             if (!payload || !payload.sub)
                 return status(401, {
