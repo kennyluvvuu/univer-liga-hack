@@ -68,7 +68,7 @@ export const userRoutes = (
                 return status(404, { message: "У вас нет задач" });
             return userTasks;
         })
-        .get("/departaments", async ({ payload, status }) => {
+        .get("/departments", async ({ payload, status }) => {
             if (!payload || !payload.sub)
                 return status(401, {
                     message: "Unauthorized",
