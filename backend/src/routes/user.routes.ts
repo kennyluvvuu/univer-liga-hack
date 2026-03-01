@@ -31,6 +31,15 @@ export const userRoutes = (
                 return status(404, { message: "У вас нет задач" });
             return userTasks;
         })
+        .get("/departaments", async ({ payload, status }) => {
+            if (!payload || !payload.sub)
+                return status(401, {
+                    message: "Unauthorized",
+                });
+            const users = await userService.list();
+            const departaments = [...new Set(users.map((u) => u.department))];
+            return departaments;
+        })
         .get("/employees", async ({ payload, status }) => {
             if (!payload || !payload.sub)
                 return status(401, {
@@ -80,7 +89,7 @@ export const userRoutes = (
                         message: "Задача по отзыву не найдена",
                     });
 
-                if (userTask.userId !== payload.sub) {
+                if (userTask.userId.toString() !== payload.sub.toString()) {
                     return status(403, {
                         message: "Задача не принадлежит этому сотруднику",
                     });
