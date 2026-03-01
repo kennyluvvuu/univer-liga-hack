@@ -9,7 +9,6 @@ export default class CommentService {
             taskId: comment.taskId,
             score: comment.score,
             comment: comment.comment,
-            anon: comment.anon,
             tags: comment.tags,
         });
 
@@ -20,7 +19,6 @@ export default class CommentService {
             taskId: newComment.taskId.toString(),
             score: newComment.score,
             comment: newComment.comment,
-            anon: newComment.anon,
             tags: newComment.tags,
             createdAt: newComment.createdAt,
             updatedAt: newComment.updatedAt,

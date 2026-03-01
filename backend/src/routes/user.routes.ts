@@ -37,7 +37,7 @@ export const userRoutes = (
                     message: "Unauthorized",
                 });
             return (await userService.list()).filter(
-                (u) => u.id !== payload.sub || u.role !== "director",
+                (u) => u.id !== payload.sub && u.role !== "director",
             );
         })
         .get("/employees/:id", async ({ payload, status, params: { id } }) => {
