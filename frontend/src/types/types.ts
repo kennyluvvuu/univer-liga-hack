@@ -1,3 +1,4 @@
+import { AnalyticsI } from './types';
 export type UserRoleI = "employee" | "director"
 
 export type UserAvatarI = string | null
@@ -26,7 +27,6 @@ export interface TaskI {
 export interface ReviewTagI {
     title: string
     type: "positive" | "negative"
-    id: string
 } 
 
 export interface ReviewI {
@@ -37,6 +37,7 @@ export interface ReviewI {
     score: number
     tags: ReviewTagI[]
     comment: string
+    date: string
 }
 
 export interface CreateReviewDto {
@@ -46,4 +47,60 @@ export interface CreateReviewDto {
     score: number
     tags: ReviewTagI[]
     comment: string
+}
+
+export interface FilterI {
+    startPeriod: string
+    endPeriod: string
+    department: string
+    employee: string
+}
+
+export interface MyReviewI {
+    id: string
+    recipientName: string
+    comment: string
+    score: number
+    tags: ReviewTagI[]
+    taskTitle: string
+    date: string 
+}
+
+
+export interface AnalyticsStatsI {
+    total: number
+    positive: number
+    negative: number
+    neutral: number
+    index: number
+    avgScore: number
+}
+
+export interface AnalyticsByMonthI extends AnalyticsStatsI {
+    month: string        // "YYYY-MM"
+}
+
+export interface AnalyticsByTagI extends AnalyticsStatsI {
+    title: string
+    type: "positive" | "negative"
+}
+
+export interface AnalyticsByEmployeeI extends AnalyticsStatsI {
+    id: string
+    name: string
+    department: string
+    avatar: string | null
+    topTags: string[]
+}
+
+export interface AnalyticsByDepartmentI extends AnalyticsStatsI {
+    department: string
+}
+
+export interface AnalyticsResponseI {
+    summary: AnalyticsStatsI
+    byMonth: AnalyticsByMonthI[]
+    byTag: AnalyticsByTagI[]
+    byEmployee: AnalyticsByEmployeeI[]
+    byDepartment: AnalyticsByDepartmentI[]
 }

@@ -1,4 +1,3 @@
-import { memo } from "react";
 import type { UserI } from "../types/types.ts";
 import { Link } from "react-router-dom";
 import UserAvatarComponent from "./UserAvatarComponent.tsx";
@@ -6,9 +5,14 @@ import { ChevronRight } from "lucide-react";
 
 interface UserComponentProps {
     user: UserI
+    searchData: string;
 }
 
-export default memo(function UserComponent({ user }: UserComponentProps) {
+export default function UserComponent({ user, searchData }: UserComponentProps) {
+    if (searchData && user.name?.toLowerCase().indexOf(searchData.toLowerCase()) === -1 && user.department?.toLowerCase().indexOf(searchData.toLowerCase()) === -1) {
+        return null;
+    }
+
     return (
         <Link 
             to={'user/' + user.id} 
@@ -30,4 +34,4 @@ export default memo(function UserComponent({ user }: UserComponentProps) {
             <ChevronRight className="h-4 w-4 text-muted-foreground flex-shrink-0" />
         </Link>
     );
-});
+}

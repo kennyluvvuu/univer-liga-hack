@@ -1,24 +1,13 @@
-import { memo, useMemo } from "react";
+import { memo } from "react";
 import { Mail, BriefcaseBusiness } from "lucide-react";
 import UserAvatarComponent from "@/components/UserAvatarComponent";
 import useQueryUser from "@/hooks/auth/useQueryUser";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-
-// Словарь для перевода ролей
-const roleMap: Record<string, string> = {
-    "admin": "Администратор",
-    "user": "Сотрудник",
-    "manager": "Менеджер",
-};
+import ReviewHistoryComponent from "@/components/ReviewHistoryComponent";
 
 export default memo(function ProfileScreen() {
     const { data: user, isLoading } = useQueryUser();
-
-    const translatedRole = useMemo(() => {
-        if (!user) return "";
-        return roleMap[user.role] || user.role;
-    }, [user]);
 
     if (isLoading) {
         return <ProfileSkeleton />;
@@ -38,8 +27,7 @@ export default memo(function ProfileScreen() {
                 <CardContent className="flex flex-row items-center gap-6 p-6">
                     <div className="relative shrink-0">
                         <UserAvatarComponent 
-                            path={user.avatar} 
-                            className="w-24 h-24 rounded-full border-4 border-background shadow-inner" 
+                            path={user.avatar}
                         />
                     </div>
                     
@@ -67,6 +55,7 @@ export default memo(function ProfileScreen() {
                     </div>
                 </CardContent>
             </Card>
+            <ReviewHistoryComponent />
         </div>
     );
 });
