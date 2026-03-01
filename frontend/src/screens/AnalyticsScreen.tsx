@@ -1,4 +1,6 @@
 // frontend/src/screens/AnalyticsScreen.tsx
+import { Download } from "lucide-react";
+import { exportAnalytics } from "@/lib/export";
 import useAuthContext from "@/hooks/context/useAuthContext";
 import type { FilterI, AnalyticsResponseI } from "@/types/types";
 import { useState } from "react";
@@ -28,7 +30,6 @@ import {
     Cell,
     PieChart,
     Pie,
-    Legend,
 } from "recharts";
 
 function getIndexColor(index: number): string {
@@ -527,13 +528,50 @@ export default function AnalyticsScreen() {
                     </Select>
                 </div>
 
-                <Button
-                    onClick={() => refetch()}
-                    disabled={isFetching}
-                    className="w-full"
-                >
-                    {isFetching ? "Загрузка..." : "Показать"}
-                </Button>
+                <div className="flex flex-col gap-2">
+                    <Button
+                        onClick={() => refetch()}
+                        disabled={isFetching}
+                        className="w-full"
+                    >
+                        {isFetching ? "Загрузка..." : "Показать"}
+                    </Button>
+
+                    {analyticsData && (
+                        <div className="grid grid-cols-3 gap-1 no-print">
+                            <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() =>
+                                    exportAnalytics(analyticsData, "xlsx")
+                                }
+                            >
+                                <Download className="h-3.5 w-3.5 mr-1" />
+                                Excel
+                            </Button>
+                            <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() =>
+                                    exportAnalytics(analyticsData, "csv")
+                                }
+                            >
+                                <Download className="h-3.5 w-3.5 mr-1" />
+                                CSV
+                            </Button>
+                            <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() =>
+                                    exportAnalytics(analyticsData, "pdf")
+                                }
+                            >
+                                <Download className="h-3.5 w-3.5 mr-1" />
+                                PDF
+                            </Button>
+                        </div>
+                    )}
+                </div>
             </article>
 
             {isFetching ? (
