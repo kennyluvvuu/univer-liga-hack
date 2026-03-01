@@ -48,14 +48,14 @@ export default memo(function Header() {
                 </div>
 
                 <nav className="flex items-center gap-2 sm:gap-6">
-                    {user?.role !== "director" ? (
+                    {pathname !== "/auth" && user?.role !== "director" ? (
                         <Link
                             to="/profile"
                             className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
                         >
                             Профиль
                         </Link>
-                    ) : (
+                    ) : pathname !== "/auth" && (
                         <Link
                             to="/employees"
                             className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
