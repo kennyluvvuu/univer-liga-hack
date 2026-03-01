@@ -80,7 +80,7 @@ export const userRoutes = (
                         message: "Задача по отзыву не найдена",
                     });
 
-                if (userTask.userId !== payload.sub) {
+                if (userTask.userId.toString() !== payload.sub.toString()) {
                     return status(403, {
                         message: "Задача не принадлежит этому сотруднику",
                     });

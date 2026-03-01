@@ -10,6 +10,7 @@ import { seedDatabase } from "./services/seed";
 import { userRoutes } from "./routes/user.routes";
 import CommentService from "./services/comment.service";
 import TaskService from "./services/task.service";
+import { analyticsRoutes } from "./routes/analytics.routes";
 
 console.log(process.env.MONGO_URL);
 await connectDb(process.env.MONGO_URL || "");
@@ -26,8 +27,9 @@ const app = new Elysia()
         }),
     )
     .use(cors())
-    .mount(userRoutes(userService, commentService, tasksService))
+    .use(userRoutes(userService, commentService, tasksService))
     .mount("/auth", authRoutes(userService))
+    .use(analyticsRoutes(userService))
     .listen({
         port: 8080,
         hostname: "0.0.0.0",
