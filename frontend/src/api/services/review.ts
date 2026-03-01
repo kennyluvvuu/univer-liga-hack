@@ -3,6 +3,6 @@ import {api} from "../axios.ts";
 
 export const reviewApi = {
     sendReview: async (data: CreateReviewDto) => await api.post<ReviewI>(`/employees/${data.recipientId}/review`, data),
-    getMyReviews: async () => await api.get<MyReviewI[]>("/my-reviews"),
-    deleteMyReview: async (reviewId: string) => await api.delete(`/my-reviews/${reviewId}`)
+    getMyReviews: async () => await api.get<MyReviewI[]>("/me/reviews"),
+    deleteMyReview: async (reviewId: string) => await api.delete(`/me/reviews/${reviewId}`)
 }

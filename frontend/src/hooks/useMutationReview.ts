@@ -2,6 +2,7 @@ import type { CreateReviewDto } from "@/types/types";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import useToastContext from "./context/useToastContext";
 import { reviewApi } from "@/api/services/review";
+import { isAxiosError } from "axios";
 
 export const useMutationReview = () => {
     const queryClient = useQueryClient();
@@ -16,8 +17,10 @@ export const useMutationReview = () => {
             success("Отзыв успешно опубликован!");
             queryClient.invalidateQueries({ queryKey: ["reviews"] });
         },
-        onError: () => {
-            error("Произошла ошибка");
+        onError: (err) => {
+            if (isAxiosError(err)) {
+                error(err.response?.status === 409 ? "Вы уже оставили отзыв этому сотруднику." : "Ошибка сервера при отправке отзыва.")
+            }
         },
     });
 };

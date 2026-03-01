@@ -1,7 +1,5 @@
 import useQueryMyReviews from "@/hooks/useQueryMyReviews";
 import ReviewComponent from "./ReviewComponent";
-// Если используете shadcn, можно добавить Skeleton для загрузки
-// import { Skeleton } from "@/components/ui/skeleton";
 
 export default function ReviewHistoryComponent() {
   const { data: myReviews = [], isLoading } = useQueryMyReviews();
