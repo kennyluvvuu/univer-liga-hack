@@ -38,7 +38,11 @@ export const authRoutes = (userService: UserService) =>
                     return status(401, "Unauthorized");
                 }
 
-                if (validUser.hash !== (await Bun.password.hash(body.password)))
+                const isOk = await Bun.password.verify(
+                    body.password,
+                    validUser.hash,
+                );
+                if (!isOk)
                     return status(401, {
                         message: "Неправильный логин или пароль",
                     });
