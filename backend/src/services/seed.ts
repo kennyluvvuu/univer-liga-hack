@@ -20,235 +20,242 @@ export async function seedDatabase() {
 
         console.log("Создаю mock-данные...");
 
-        const mockUsers = [
-            {
-                name: "Иван Петров",
-                role: "employee" as const,
-                department: "Менеджмент",
-                email: "ivan@example.com",
-                id_crm: "CRM001",
-                avatar: "https://i.pravatar.cc/150?u=ivan",
-                hash: await Bun.password.hash("password123"),
-            },
-            {
-                name: "Мария Сидорова",
-                role: "director" as const,
-                department: "Руководство",
-                email: "maria@example.com",
-                id_crm: "CRM002",
-                avatar: "https://i.pravatar.cc/150?u=maria",
-                hash: await Bun.password.hash("director123"),
-            },
-            {
-                name: "Алексей Смирнов",
-                role: "employee" as const,
-                department: "Разработка",
-                email: "alexey@example.com",
-                id_crm: "CRM003",
-                avatar: "https://i.pravatar.cc/150?u=alexey",
-                hash: await Bun.password.hash("dev12345"),
-            },
-            {
-                name: "Елена Козлова",
-                role: "employee" as const,
-                department: "Дизайн",
-                email: "elena@example.com",
-                id_crm: "CRM004",
-                avatar: "https://i.pravatar.cc/150?u=elena",
-                hash: await Bun.password.hash("design123"),
-            },
-            {
-                name: "Дмитрий Новиков",
-                role: "employee" as const,
-                department: "Аналитика",
-                email: "dmitry@example.com",
-                id_crm: "CRM005",
-                avatar: "https://i.pravatar.cc/150?u=dmitry",
-                hash: await Bun.password.hash("analyst123"),
-            },
+        // Массивы для генерации данных
+        const firstNames = [
+            "Иван", "Алексей", "Дмитрий", "Андрей", "Сергей", "Михаил", "Александр", "Владимир", "Николай", "Павел",
+            "Елена", "Ольга", "Наталья", "Анна", "Татьяна", "Светлана", "Мария", "Екатерина", "Юлия", "Ирина"
         ];
+        const lastNames = [
+            "Петров", "Смирнов", "Иванов", "Козлов", "Новиков", "Попов", "Соколов", "Лебедев", "Козырев", "Виноградов",
+            "Сидоров", "Морозов", "Волков", "Алексеев", "Лебедев", "Семенов", "Егоров", "Павлов", "Григорьев", "Степанов"
+        ];
+        const departments = ["Разработка", "Дизайн", "Аналитика", "Менеджмент", "Маркетинг", "Продажи", "Поддержка", "Тестирование"];
+        const positiveTags = [
+            { title: "Хорошее ТЗ", type: "positive" as const },
+            { title: "Доброжелательность", type: "positive" as const },
+            { title: "Высокая экспертность", type: "positive" as const },
+            { title: "Подробно объяснил", type: "positive" as const },
+            { title: "Помог в дедлайн", type: "positive" as const },
+            { title: "Ответственный подход", type: "positive" as const },
+            { title: "Креативность", type: "positive" as const },
+            { title: "Профессионализм", type: "positive" as const }
+        ];
+        const negativeTags = [
+            { title: "Срыв сроков", type: "negative" as const },
+            { title: "Отказал без причины", type: "negative" as const },
+            { title: "Неверная рекомендация", type: "negative" as const },
+            { title: "Избегает задач", type: "negative" as const },
+            { title: "Грубость", type: "negative" as const },
+            { title: "Некомпетентность", type: "negative" as const },
+            { title: "Плохая коммуникация", type: "negative" as const },
+            { title: "Поверхностный подход", type: "negative" as const }
+        ];
+        const taskTitles = [
+            "Подготовить отчет за квартал",
+            "Провести собеседования",
+            "Реализовать новый функционал",
+            "Исправить баги в системе",
+            "Обновить документацию",
+            "Провести код-ревью",
+            "Спроектировать архитектуру",
+            "Настроить CI/CD",
+            "Оптимизировать производительность",
+            "Разработать тесты",
+            "Создать макеты интерфейса",
+            "Проанализировать метрики",
+            "Подготовить презентацию",
+            "Провести встречу с клиентом",
+            "Обновить зависимости",
+            "Рефакторинг кода",
+            "Настроить мониторинг",
+            "Исследовать новые технологии",
+            "Менторство младших разработчиков",
+            "Участие в конференции"
+        ];
+        const taskDescriptions = [
+            "Собрать статистику и подготовить презентацию для руководства",
+            "Откликнуться на резюме и провести первичные интервью",
+            "Создать CRUD операции для управления данными",
+            "Устранить проблемы с производительностью и памятью",
+            "Актуализировать техническую документацию проекта",
+            "Проверить код коллег и оставить комментарии",
+            "Разработать масштабируемую архитектуру сервиса",
+            "Настроить автоматическую сборку и деплой",
+            "Ускорить время отклика API в 2 раза",
+            "Покрыть критический функционал юнит-тестами",
+            "Создать современные макеты для мобильного приложения",
+            "Изучить данные и подготовить рекомендации",
+            "Подготовить слайды для выступления на митапе",
+            "Обсудить требования и сроки с заказчиком",
+            "Обновить библиотеки до последних версий",
+            "Улучшить читаемость и поддерживаемость кода",
+            "Внедрить систему отслеживания ошибок",
+            "Изучить возможности применения новых фреймворков",
+            "Помочь новичкам освоиться в проекте",
+            "Выступить с докладом перед сообществом"
+        ];
+        const commentTemplates = [
+            { text: "Работа выполнена качественно, рекомендую!", scores: [8, 9, 10] },
+            { text: "Хороший результат, но есть куда расти.", scores: [6, 7, 8] },
+            { text: "Отличная работа, всё сделано в срок!", scores: [9, 10] },
+            { text: "Задача выполнена, но с небольшими замечаниями.", scores: [5, 6, 7] },
+            { text: "Профессиональный подход к решению задачи.", scores: [8, 9, 10] },
+            { text: "Результат не совсем соответствует ожиданиям.", scores: [4, 5, 6] },
+            { text: "Превосходно! Превзошёл все ожидания.", scores: [10] },
+            { text: "Средний результат, нужно улучшать качество.", scores: [5, 6] },
+            { text: "Хорошо справился с задачей, есть потенциал.", scores: [7, 8] },
+            { text: "К сожалению, работа выполнена слабо.", scores: [3, 4, 5] }
+        ];
+
+        // Создаем 50 пользователей: 1 директор (maria @example.com) + 49 сотрудников
+        const mockUsers: Array<{
+            name: string;
+            role: "employee" | "director";
+            department: string;
+            email: string;
+            id_crm: string;
+            avatar: string;
+            hash: string;
+        }> = [];
+
+        // Добавляем директора - Мария Сидорова
+        mockUsers.push({
+            name: "Мария Сидорова",
+            role: "director" as const,
+            department: "Руководство",
+            email: "maria@example.com",
+            id_crm: "CRM001",
+            avatar: "https://i.pravatar.cc/150?u=maria",
+            hash: await Bun.password.hash("director123"),
+        });
+
+        // Добавляем 49 сотрудников
+        for (let i = 0; i < 49; i++) {
+            const firstName = firstNames[i % firstNames.length];
+            const lastName = lastNames[i % lastNames.length];
+            const department = departments[i % departments.length];
+            const email = `employee${i + 1}@example.com`;
+            
+            mockUsers.push({
+                name: `${firstName} ${lastName}`,
+                role: "employee" as const,
+                department: department,
+                email: email,
+                id_crm: `CRM${String(i + 2).padStart(3, '0')}`,
+                avatar: `https://i.pravatar.cc/150?u=employee${i + 1}`,
+                hash: await Bun.password.hash("password123"),
+            });
+        }
 
         const createdUsers = await UserModel.insertMany(mockUsers);
-        console.log(`✅ Создано ${mockUsers.length} mock-пользователей`);
+        console.log(`✅ Создано ${mockUsers.length} mock-пользователей (1 директор + 49 сотрудников)`);
 
-        // Создаем mock-задачи для каждого пользователя
-        const mockTasks = [
-            {
+        // Создаем задачи: по 3 задачи на каждого сотрудника (49 * 3 = 147 задач)
+        const mockTasks: Array<{
+            userId: any;
+            title: string;
+            desc: string;
+        }> = [];
+
+        // У директора тоже есть задачи (3 задачи)
+        for (let i = 0; i < 3; i++) {
+            mockTasks.push({
                 userId: createdUsers[0]._id,
-                title: "Подготовить отчет за квартал",
-                desc: "Собрать статистику по продажам и подготовить презентацию для руководства",
-            },
-            {
-                userId: createdUsers[0]._id,
-                title: "Провести собеседования",
-                desc: "Откликнуться на резюме и провести первичные интервью кандидатов",
-            },
-            {
-                userId: createdUsers[1]._id,
-                title: "Утвердить бюджет",
-                desc: "Рассмотреть и утвердить бюджет на следующий квартал",
-            },
-            {
-                userId: createdUsers[2]._id,
-                title: "Реализовать API для задач",
-                desc: "Создать CRUD операции для управления задачами в системе",
-            },
-            {
-                userId: createdUsers[2]._id,
-                title: "Исправить баги в авторизации",
-                desc: "Устранить проблемы с токенами и сессиями пользователей",
-            },
-            {
-                userId: createdUsers[3]._id,
-                title: "Обновить дизайн главной страницы",
-                desc: "Создать новые макеты и согласовать с командой",
-            },
-            {
-                userId: createdUsers[4]._id,
-                title: "Анализ метрик продукта",
-                desc: "Изучить данные и подготовить рекомендации по улучшению конверсии",
-            },
-        ];
+                title: taskTitles[i],
+                desc: taskDescriptions[i],
+            });
+        }
+
+        // У каждого сотрудника по 3 задачи
+        for (let i = 1; i < createdUsers.length; i++) {
+            const taskCount = 3;
+            for (let j = 0; j < taskCount; j++) {
+                const taskIndex = (i * j + j) % taskTitles.length;
+                mockTasks.push({
+                    userId: createdUsers[i]._id,
+                    title: taskTitles[taskIndex],
+                    desc: taskDescriptions[taskIndex],
+                });
+            }
+        }
 
         const createdTasks = await TaskModel.insertMany(mockTasks);
         console.log(`✅ Создано ${mockTasks.length} mock-задач`);
 
-        // Создаем mock-отзывы
-        const mockComments = [
-            // Отзывы для Ивана Петрова (createdUsers[0]) - смешанные (score 4-8)
-            {
-                recipientId: createdUsers[0]._id,
-                senderId: createdUsers[2]._id, // Алексей
-                taskId: createdTasks[0]._id,
-                score: 6,
-                comment: "Иван хорошо организовал процесс, но сроки были немного сдвинуты.",
-                tags: [
-                    { title: "Хорошее ТЗ", type: "positive" as const },
-                    { title: "Срыв сроков", type: "negative" as const }
-                ],
-                createdAt: new Date("2025-10-15")
-            },
-            {
-                recipientId: createdUsers[0]._id,
-                senderId: createdUsers[3]._id, // Елена
-                taskId: createdTasks[1]._id,
-                score: 8,
-                comment: "Чётко поставлена задача, легко было работать по ТЗ.",
-                tags: [
-                    { title: "Хорошее ТЗ", type: "positive" as const },
-                    { title: "Доброжелательность", type: "positive" as const }
-                ],
-                createdAt: new Date("2025-11-20")
-            },
-            {
-                recipientId: createdUsers[0]._id,
-                senderId: createdUsers[4]._id, // Дмитрий
-                taskId: createdTasks[0]._id,
-                score: 4,
-                comment: "Задача была составлена нечётко, пришлось несколько раз уточнять детали.",
-                tags: [
-                    { title: "Отказал без причины", type: "negative" as const }
-                ],
-                createdAt: new Date("2025-12-05")
-            },
+        // Создаем отзывы: ~3 отзыва на каждого сотрудника (49 * 3 = 147 отзывов)
+        const mockComments: Array<{
+            recipientId: any;
+            senderId: any;
+            taskId: any;
+            score: number;
+            comment: string;
+            tags: Array<{ title: string; type: "positive" | "negative" }>;
+            createdAt: Date;
+        }> = [];
 
-            // Отзывы для Алексея Смирнова (createdUsers[2]) - в основном позитив (score 8-10)
-            {
-                recipientId: createdUsers[2]._id,
-                senderId: createdUsers[0]._id, // Иван
-                taskId: createdTasks[3]._id,
-                score: 10,
-                comment: "Алексей отлично реализовал API, всё работает как часы!",
-                tags: [
-                    { title: "Высокая экспертность", type: "positive" as const },
-                    { title: "Подробно объяснил", type: "positive" as const }
-                ],
-                createdAt: new Date("2025-09-10")
-            },
-            {
-                recipientId: createdUsers[2]._id,
-                senderId: createdUsers[3]._id, // Елена
-                taskId: createdTasks[4]._id,
-                score: 10,
-                comment: "Быстро исправил все баги, очень помог с интеграцией.",
-                tags: [
-                    { title: "Помог в дедлайн", type: "positive" as const },
-                    { title: "Доброжелательность", type: "positive" as const }
-                ],
-                createdAt: new Date("2025-10-25")
-            },
-            {
-                recipientId: createdUsers[2]._id,
-                senderId: createdUsers[4]._id, // Дмитрий
-                taskId: createdTasks[3]._id,
-                score: 8,
-                comment: "Качественная работа, небольшие замечания были устранены оперативно.",
-                tags: [
-                    { title: "Высокая экспертность", type: "positive" as const }
-                ],
-                createdAt: new Date("2025-11-15")
-            },
+        // Генерируем отзывы для каждого сотрудника (кроме директора)
+        for (let i = 1; i < createdUsers.length; i++) {
+            const recipient = createdUsers[i];
+            const reviewCount = 3;
+            
+            for (let j = 0; j < reviewCount; j++) {
+                // Выбираем случайного отправителя (не самого себя)
+                let senderIndex = (i + j + 1) % createdUsers.length;
+                if (senderIndex === i) senderIndex = (senderIndex + 1) % createdUsers.length;
+                const sender = createdUsers[senderIndex];
 
-            // Отзывы для Елены Козловой (createdUsers[3]) - нейтрально (score 6-8)
-            {
-                recipientId: createdUsers[3]._id,
-                senderId: createdUsers[0]._id, // Иван
-                taskId: createdTasks[5]._id,
-                score: 8,
-                comment: "Дизайн получился современным и удобным, команда довольна.",
-                tags: [
-                    { title: "Доброжелательность", type: "positive" as const },
-                    { title: "Подробно объяснил", type: "positive" as const }
-                ],
-                createdAt: new Date("2025-10-01")
-            },
-            {
-                recipientId: createdUsers[3]._id,
-                senderId: createdUsers[2]._id, // Алексей
-                taskId: createdTasks[5]._id,
-                score: 6,
-                comment: "Макеты хорошие, но потребовалось несколько итераций доработки.",
-                tags: [
-                    { title: "Хорошее ТЗ", type: "positive" as const }
-                ],
-                createdAt: new Date("2025-12-10")
-            },
+                // Выбираем задачу получателя
+                const recipientTasks = createdTasks.filter(t => t.userId.toString() === recipient._id.toString());
+                if (recipientTasks.length === 0) continue;
+                const task = recipientTasks[j % recipientTasks.length];
 
-            // Отзывы для Дмитрия Новикова (createdUsers[4]) - немного негатив (score 4-6)
-            {
-                recipientId: createdUsers[4]._id,
-                senderId: createdUsers[0]._id, // Иван
-                taskId: createdTasks[6]._id,
-                score: 4,
-                comment: "Анализ был поверхностным, рекомендации не помогли улучшить метрики.",
-                tags: [
-                    { title: "Неверная рекомендация", type: "negative" as const },
-                    { title: "Избегает задач", type: "negative" as const }
-                ],
-                createdAt: new Date("2025-11-01")
-            },
-            {
-                recipientId: createdUsers[4]._id,
-                senderId: createdUsers[2]._id, // Алексей
-                taskId: createdTasks[6]._id,
-                score: 6,
-                comment: "Данные собраны, но выводы могли бы быть более глубокими.",
-                tags: [
-                    { title: "Грубость", type: "negative" as const }
-                ],
-                createdAt: new Date("2025-12-20")
-            },
-        ];
+                // Выбираем шаблон комментария
+                const template = commentTemplates[(i + j) % commentTemplates.length];
+                const score = template.scores[j % template.scores.length];
+
+                // Выбираем теги на основе оценки
+                const tags: Array<{ title: string; type: "positive" | "negative" }> = [];
+                if (score >= 8) {
+                    // Позитивные теги
+                    tags.push(positiveTags[(i + j) % positiveTags.length]);
+                    if (score === 10) {
+                        tags.push(positiveTags[(i + j + 1) % positiveTags.length]);
+                    }
+                } else if (score <= 5) {
+                    // Негативные теги
+                    tags.push(negativeTags[(i + j) % negativeTags.length]);
+                    if (score <= 4) {
+                        tags.push(negativeTags[(i + j + 1) % negativeTags.length]);
+                    }
+                } else {
+                    // Смешанные теги
+                    tags.push(positiveTags[(i + j) % positiveTags.length]);
+                    tags.push(negativeTags[(i + j) % negativeTags.length]);
+                }
+
+                // Генерируем дату в прошлом (от 1 до 90 дней назад)
+                const daysAgo = (i * 2 + j * 3) % 90 + 1;
+                const createdAt = new Date();
+                createdAt.setDate(createdAt.getDate() - daysAgo);
+
+                mockComments.push({
+                    recipientId: recipient._id,
+                    senderId: sender._id,
+                    taskId: task._id,
+                    score: score,
+                    comment: template.text,
+                    tags: tags,
+                    createdAt: createdAt,
+                });
+            }
+        }
 
         await CommentModel.insertMany(mockComments);
         console.log(`✅ Создано ${mockComments.length} mock-отзывов`);
 
-        console.log("📧 Пароли для входа:");
-        console.log("   ivan@example.com / password123");
-        console.log("   maria@example.com / director123");
-        console.log("   alexey@example.com / dev12345");
-        console.log("   elena@example.com / design123");
-        console.log("   dmitry@example.com / analyst123");
+        console.log("\n📧 Пароли для входа:");
+        console.log("   maria@example.com / director123 (Директор)");
+        console.log("   employee1@example.com - employee49@example.com / password123 (Сотрудники)");
     } catch (error) {
         console.error("Ошибка при создании mock-данных:", error);
     }
