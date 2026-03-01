@@ -38,6 +38,11 @@ export const authRoutes = (userService: UserService) =>
                     return status(401, "Unauthorized");
                 }
 
+                if (validUser.hash !== (await Bun.password.hash(body.password)))
+                    return status(401, {
+                        message: "Неправильный логин или пароль",
+                    });
+
                 const token = await jwt.sign({ sub: validUser._id.toString() });
                 return {
                     token: token,
