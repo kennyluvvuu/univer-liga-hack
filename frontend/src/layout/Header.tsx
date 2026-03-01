@@ -24,14 +24,19 @@ export default memo(function Header() {
                 </Link>
 
                 <nav className="flex items-center gap-2 sm:gap-6">
-                    {user?.role !== "director" && <Link 
+                    {user?.role !== "director" ? <Link 
                         to="/profile" 
                         className={cn(
                             "text-sm font-medium text-muted-foreground transition-colors hover:text-primary",
                         )}
                     >
                         Профиль
-                    </Link>}
+                    </Link> : <Link
+                        to="/employees"
+                        className={cn(
+                            "text-sm font-medium text-muted-foreground transition-colors hover:text-primary",
+                        )}
+                        >Сотрудники</Link>}
                     
                     <div className="flex items-center gap-4 pl-4 border-l">
                         <LogoutComponent />
