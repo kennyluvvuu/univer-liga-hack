@@ -182,7 +182,7 @@ export async function seedDatabase() {
         const createdTasks = await TaskModel.insertMany(mockTasks);
         console.log(`✅ Создано ${mockTasks.length} mock-задач`);
 
-        // Создаем отзывы: ~3 отзыва на каждого сотрудника (49 * 3 = 147 отзывов)
+        // Создаем отзывы: разное количество на каждого сотрудника (от 1 до 8)
         const mockComments: Array<{
             recipientId: any;
             senderId: any;
@@ -193,15 +193,30 @@ export async function seedDatabase() {
             createdAt: Date;
         }> = [];
 
+        // Вспомогательная функция для псевдослучайного числа с seed
+        function seededRandom(seed: number) {
+            const x = Math.sin(seed) * 10000;
+            return x - Math.floor(x);
+        }
+
         // Генерируем отзывы для каждого сотрудника (кроме директора)
         for (let i = 1; i < createdUsers.length; i++) {
             const recipient = createdUsers[i];
-            const reviewCount = 3;
             
+            // Разное количество отзывов: от 1 до 8 (с большой дисперсией)
+            const reviewCount = Math.floor(seededRandom(i * 7 + 13) * 8) + 1;
+
             for (let j = 0; j < reviewCount; j++) {
-                // Выбираем случайного отправителя (не самого себя)
-                let senderIndex = (i + j + 1) % createdUsers.length;
+                // Выбираем случайного отправителя из разных отделов (не самого себя)
+                // Предпочтение отдаем сотрудникам из других отделов
+                let senderIndex;
+                const offset = Math.floor(seededRandom(i * 31 + j * 17) * (createdUsers.length - 2)) + 1;
+                senderIndex = (i + offset) % createdUsers.length;
                 if (senderIndex === i) senderIndex = (senderIndex + 1) % createdUsers.length;
+                // Пропускаем директора как отправителя в большинстве случаев
+                if (senderIndex === 0 && seededRandom(i * j + 5) > 0.3) {
+                    senderIndex = (senderIndex + 1) % createdUsers.length;
+                }
                 const sender = createdUsers[senderIndex];
 
                 // Выбираем задачу получателя
@@ -209,32 +224,65 @@ export async function seedDatabase() {
                 if (recipientTasks.length === 0) continue;
                 const task = recipientTasks[j % recipientTasks.length];
 
-                // Выбираем шаблон комментария
-                const template = commentTemplates[(i + j) % commentTemplates.length];
-                const score = template.scores[j % template.scores.length];
+                // Разнообразные шаблоны комментариев с акцентом на помощь с задачами
+                const helpCommentTemplates = [
+                    { text: "Отлично помог разобраться с задачей, дал ценные советы по реализации!", scores: [8, 9, 10] },
+                    { text: "Благодарю за помощь в решении сложной проблемы с архитектурой.", scores: [8, 9, 10] },
+                    { text: "Помог оптимизировать код, теперь всё работает намного быстрее!", scores: [9, 10] },
+                    { text: "Спасибо за поддержку в дедлайн, без помощи не справился бы.", scores: [9, 10] },
+                    { text: "Хорошо объяснил нюансы, но остались вопросы по некоторым моментам.", scores: [6, 7, 8] },
+                    { text: "Помог с настройкой CI/CD, хотя пришлось подождать ответа.", scores: [6, 7, 8] },
+                    { text: "Консультация была полезной, задача решена успешно!", scores: [8, 9] },
+                    { text: "Дал хорошую рекомендацию по рефакторингу, код стал чище.", scores: [8, 9, 10] },
+                    { text: "Помог найти баг в системе, сэкономил кучу времени!", scores: [9, 10] },
+                    { text: "Объяснил принцип работы, но хотелось бы более подробного разбора.", scores: [6, 7] },
+                    { text: "Спасибо за менторство! Теперь понимаю проект гораздо лучше.", scores: [9, 10] },
+                    { text: "Помог с код-ревью, указал на важные моменты.", scores: [8, 9] },
+                    { text: "К сожалению, помощь была поверхностной, остались нерешённые вопросы.", scores: [4, 5, 6] },
+                    { text: "Долго не отвечал, но в итоге помог разобраться.", scores: [5, 6, 7] },
+                    { text: "Рекомендация оказалась не совсем верной, пришлось переделывать.", scores: [4, 5] },
+                    { text: "Помог частично, но основную проблему так и не решили.", scores: [5, 6] },
+                    { text: "Отличная поддержка! Вместе мы быстро нашли решение.", scores: [9, 10] },
+                    { text: "Благодарю за терпение и подробные объяснения!", scores: [8, 9, 10] },
+                    { text: "Помог интегрировать новую библиотеку, всё работает!", scores: [8, 9] },
+                    { text: "Спасибо за помощь с отладкой, баг был неочевидный.", scores: [8, 9, 10] }
+                ];
 
-                // Выбираем теги на основе оценки
+                // Выбираем шаблон комментария с большим разбросом
+                const templateIndex = Math.floor(seededRandom(i * 23 + j * 11) * helpCommentTemplates.length);
+                const template = helpCommentTemplates[templateIndex];
+                const scoreIndex = Math.floor(seededRandom(i * 19 + j * 7) * template.scores.length);
+                const score = template.scores[scoreIndex];
+
+                // Выбираем теги на основе оценки с большим разнообразием
                 const tags: Array<{ title: string; type: "positive" | "negative" }> = [];
-                if (score >= 8) {
-                    // Позитивные теги
-                    tags.push(positiveTags[(i + j) % positiveTags.length]);
-                    if (score === 10) {
-                        tags.push(positiveTags[(i + j + 1) % positiveTags.length]);
+                const numTags = Math.floor(seededRandom(i * 37 + j * 29) * 3) + 1; // 1-3 тега
+                
+                for (let t = 0; t < numTags; t++) {
+                    if (score >= 8) {
+                        const tagIndex = Math.floor(seededRandom(i * 41 + j * 43 + t * 53) * positiveTags.length);
+                        if (!tags.some(tag => tag.title === positiveTags[tagIndex].title)) {
+                            tags.push(positiveTags[tagIndex]);
+                        }
+                    } else if (score <= 5) {
+                        const tagIndex = Math.floor(seededRandom(i * 47 + j * 59 + t * 61) * negativeTags.length);
+                        if (!tags.some(tag => tag.title === negativeTags[tagIndex].title)) {
+                            tags.push(negativeTags[tagIndex]);
+                        }
+                    } else {
+                        // Смешанные теги для средних оценок
+                        const allTags = [...positiveTags, ...negativeTags];
+                        const tagIndex = Math.floor(seededRandom(i * 67 + j * 71 + t * 73) * allTags.length);
+                        if (!tags.some(tag => tag.title === allTags[tagIndex].title)) {
+                            tags.push(allTags[tagIndex]);
+                        }
                     }
-                } else if (score <= 5) {
-                    // Негативные теги
-                    tags.push(negativeTags[(i + j) % negativeTags.length]);
-                    if (score <= 4) {
-                        tags.push(negativeTags[(i + j + 1) % negativeTags.length]);
-                    }
-                } else {
-                    // Смешанные теги
-                    tags.push(positiveTags[(i + j) % positiveTags.length]);
-                    tags.push(negativeTags[(i + j) % negativeTags.length]);
                 }
 
-                // Генерируем дату в прошлом (от 1 до 90 дней назад)
-                const daysAgo = (i * 2 + j * 3) % 90 + 1;
+                // Генерируем дату в прошлом (от 30 до 210 дней назад - минимум полгода)
+                const minDays = 30;
+                const maxDays = 210;
+                const daysAgo = Math.floor(seededRandom(i * 83 + j * 89) * (maxDays - minDays + 1)) + minDays;
                 const createdAt = new Date();
                 createdAt.setDate(createdAt.getDate() - daysAgo);
 
