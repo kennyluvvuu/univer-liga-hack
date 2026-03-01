@@ -16,14 +16,14 @@ import type { ReviewTagI } from "@/types/types";
 import useAuthContext from "@/hooks/context/useAuthContext";
 
 const POSITIVE_TAGS: ReviewTagI[] = [
-    { id: 'p1', title: 'Скорость', type: 'positive' },
-    { id: 'p2', title: 'Качество', type: 'positive' },
-    { id: 'p3', title: 'Понимание', type: 'positive' }
+    { title: 'Скорость', type: 'positive' },
+    { title: 'Качество', type: 'positive' },
+    { title: 'Понимание', type: 'positive' }
 ];
 const NEGATIVE_TAGS: ReviewTagI[] = [
-    { id: 'n1', title: 'Долго', type: 'negative' },
-    { id: 'n2', title: 'Ошибки', type: 'negative' },
-    { id: 'n3', title: 'ТЗ не соблюдено', type: 'negative' }
+    { title: 'Долго', type: 'negative' },
+    { title: 'Ошибки', type: 'negative' },
+    { title: 'ТЗ не соблюдено', type: 'negative' }
 ];
 
 const ALL_TAGS: ReviewTagI[] = [...POSITIVE_TAGS, ...NEGATIVE_TAGS];
@@ -47,7 +47,8 @@ export default memo(function ReviewScreen() {
     const handleSubmit = () => {
         if (!recipientId || !selectedTaskId || !currentUser) return;
 
-        const tags: ReviewTagI[] = ALL_TAGS.filter((tag) => selectedTagIds.includes(tag.id));
+        const tags: ReviewTagI[] = ALL_TAGS.filter((tag) => selectedTagIds.includes(tag.title))
+        .map(tag => ({ title: tag.title, type: tag.type }));
         console.log({
             recipientId,
             senderId: currentUser.id,
@@ -79,11 +80,11 @@ export default memo(function ReviewScreen() {
                 </div>
             </header>
 
-            <div className="space-y-6">
-                <div className="space-y-3">
+            <div className="space-y-6 w-full">
+                <div className="space-y-3 w-full">
                     <Label className="text-base font-medium">Выберите выполненную задачу</Label>
                     <Select onValueChange={setSelectedTaskId} value={selectedTaskId} disabled={isPending}>
-                        <SelectTrigger className="h-12"><SelectValue placeholder="Список задач" /></SelectTrigger>
+                        <SelectTrigger className="h-12 w-full"><SelectValue placeholder="Список задач" /></SelectTrigger>
                         <SelectContent>
                             {tasks.map((t) => <SelectItem key={t.id} value={t.id}>{t.title}</SelectItem>)}
                         </SelectContent>
@@ -155,7 +156,7 @@ function TagSection({ label, tags, selectedTagIds, onChange, disabled, activeCla
             <Label className="text-sm text-muted-foreground uppercase tracking-wider">{label}</Label>
             <ToggleGroup type="multiple" variant="outline" className="justify-start flex-wrap gap-2" value={selectedTagIds} onValueChange={onChange} disabled={disabled}>
                 {tags.map(tag => (
-                    <ToggleGroupItem key={tag.id} value={tag.id} className={`rounded-full ${activeClass}`}>
+                    <ToggleGroupItem key={tag.title} value={tag.title} className={`rounded-full ${activeClass}`}>
                         {tag.title}
                     </ToggleGroupItem>
                 ))}
