@@ -20,46 +20,65 @@ export default class CommentService {
             score: newComment.score,
             comment: newComment.comment,
             tags: newComment.tags,
-            createdAt: newComment.createdAt,
-            updatedAt: newComment.updatedAt,
+            date: newComment.createdAt.toISOString(),
         };
     }
 
     async getByRecipientId(recipientId: string) {
         const commentsList = await CommentModel.find({ recipientId }).lean();
-        return commentsList.map(({ _id, createdAt, updatedAt, ...c }) => ({
+        return commentsList.map(({ _id, createdAt, updatedAt, recipientId, senderId, taskId, ...c }) => ({
             ...c,
             id: _id.toString(),
-            createdAt,
-            updatedAt,
+            recipientId: recipientId.toString(),
+            senderId: senderId.toString(),
+            taskId: taskId.toString(),
+            date: createdAt.toISOString(),
         }));
     }
 
     async getBySenderId(senderId: string) {
         const commentsList = await CommentModel.find({ senderId }).lean();
-        return commentsList.map(({ _id, createdAt, updatedAt, ...c }) => ({
+        return commentsList.map(({ _id, createdAt, updatedAt, recipientId, senderId, taskId, ...c }) => ({
             ...c,
             id: _id.toString(),
-            createdAt,
-            updatedAt,
+            recipientId: recipientId.toString(),
+            senderId: senderId.toString(),
+            taskId: taskId.toString(),
+            date: createdAt.toISOString(),
         }));
     }
 
     async getByTaskId(taskId: string) {
         const commentsList = await CommentModel.find({ taskId }).lean();
-        return commentsList.map(({ _id, createdAt, updatedAt, ...c }) => ({
+        return commentsList.map(({ _id, createdAt, updatedAt, recipientId, senderId, taskId: tid, ...c }) => ({
             ...c,
             id: _id.toString(),
-            createdAt,
-            updatedAt,
+            recipientId: recipientId.toString(),
+            senderId: senderId.toString(),
+            taskId: tid.toString(),
+            date: createdAt.toISOString(),
         }));
     }
 
     async getById(id: string) {
-        return CommentModel.findById(id).lean();
+        const comment = await CommentModel.findById(id).lean();
+        if (!comment) return null;
+        return {
+            ...comment,
+            id: comment._id.toString(),
+            recipientId: comment.recipientId.toString(),
+            senderId: comment.senderId.toString(),
+            taskId: comment.taskId.toString(),
+        };
+    }
+
+    async existsBySenderAndTask(senderId: string, taskId: string): Promise<boolean> {
+        const review = await CommentModel.findOne({ senderId, taskId }).lean();
+        return review !== null;
     }
 
     async delete(id: string) {
-        return CommentModel.deleteOne({ _id: id });
+        const result = await CommentModel.deleteOne({ _id: id });
+        return result.deletedCount > 0 ? true : false;
     }
 }

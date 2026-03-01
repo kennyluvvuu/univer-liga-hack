@@ -32,6 +32,7 @@ export default class UserService {
         return {
             id: user._id.toString(),
             email: user.email,
+            name: user.name,
             department: user.department,
             role: user.role,
             avatar: user.avatar,

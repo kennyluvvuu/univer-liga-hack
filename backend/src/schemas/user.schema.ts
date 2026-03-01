@@ -10,6 +10,7 @@ export const UserSchema = t.Object({
 
 export const UserSchemaResponce = t.Object({
     id: t.String(),
+    name: t.String(),
     department: t.String(),
     email: t.String(),
     role: t.Union([t.Literal("employee"), t.Literal("director")]),

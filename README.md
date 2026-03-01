@@ -48,27 +48,68 @@ univer-liga-hack/
 │   ├── src/
 │   │   ├── api/          # API клиенты
 │   │   ├── components/   # React компоненты
+│   │   │   ├── ui/       # UI компоненты (Shadcn)
+│   │   │   ├── LogoutComponent.tsx
+│   │   │   ├── ToastContainer.tsx
+│   │   │   ├── UserAvatarComponent.tsx
+│   │   │   ├── UserComponent.tsx
+│   │   │   └── UserListComponent.tsx
 │   │   ├── hooks/        # Кастомные хуки
 │   │   ├── layout/       # Layout компоненты
 │   │   ├── lib/          # Утилиты
 │   │   ├── screens/      # Страницы приложения
+│   │   │   ├── AnalyticsScreen.tsx
+│   │   │   ├── LoginScreen.tsx
+│   │   │   ├── MainScreens.tsx
+│   │   │   ├── NotFoundScreen.tsx
+│   │   │   ├── ProfileScreen.tsx
+│   │   │   └── ReviewScreen.tsx
 │   │   ├── stores/       # State management
-│   │   └── types/        # TypeScript типы
-│   └── public/           # Статические ресурсы
+│   │   ├── types/        # TypeScript типы
+│   │   ├── App.tsx       # Корневой компонент
+│   │   ├── main.tsx      # Точка входа
+│   │   └── ProtectedRoute.tsx
+│   ├── public/           # Статические ресурсы
+│   ├── index.html
+│   ├── vite.config.ts
+│   ├── package.json
+│   └── Dockerfile
 │
 ├── backend/              # ElysiaJS API
 │   └── src/
-│       ├── models/       # Mongoose модели (User, Task, Comment)
+│       ├── models/       # Mongoose модели
+│       │   ├── user.model.ts
+│       │   ├── task.model.ts
+│       │   └── comment.model.ts
 │       ├── plugins/      # Elysia плагины (auth)
-│       ├── routes/       # API роуты (auth, user, review)
+│       ├── routes/       # API роуты
+│       │   ├── auth.routes.ts
+│       │   ├── user.routes.ts
+│       │   ├── review.routes.ts
+│       │   └── analytics.routes.ts
 │       ├── schemas/      # Валидация схем
-│       └── services/     # Бизнес-логика
+│       │   ├── user.schema.ts
+│       │   └── review.schema.ts
+│       ├── services/     # Бизнес-логика
+│       │   ├── db.ts
+│       │   ├── user.service.ts
+│       │   ├── user.service.mock.ts
+│       │   ├── task.service.ts
+│       │   ├── comment.service.ts
+│       │   └── seed.ts
+│       └── index.ts      # Точка входа
+│   ├── package.json
+│   └── Dockerfile
 │
 ├── mongo-data/           # Данные MongoDB (volume)
 ├── .env.example          # Шаблон корневого .env
 ├── docker-compose.yml    # Продакшен конфигурация
-├── docker-compose.dev.yml    # Development конфигурация
-└── Caddyfile             # Конфигурация Caddy
+├── docker-compose.dev.yml # Development конфигурация
+├── Caddyfile             # Конфигурация Caddy (dev)
+├── Caddyfile.prod        # Конфигурация Caddy (prod)
+├── Dockerfile            # Корневой Dockerfile
+├── package.json          # Workspace конфигурация
+└── tsconfig.json         # TypeScript конфигурация
 ```
 
 ## 🚀 Быстрый старт
@@ -83,24 +124,35 @@ cp .env.example .env
 cp backend/.env.example backend/.env
 ```
 
-2. **Запуск development среды:**
+2. **Установка зависимостей:**
+
+```bash
+# Установка всех зависимостей (корень + workspace пакеты)
+bun install
+```
+
+3. **Запуск development среды:**
 
 ```bash
 # Запуск MongoDB в Docker
 docker compose -f docker-compose.dev.yml up --build
+```
 
-# В отдельном терминале - запуск бэкенда
+4. **Запуск приложений:**
+
+```bash
+# Запуск бэкенда (в отдельном терминале)
 cd backend
 bun run dev
 
-# В ещё одном терминале - запуск фронтенда
+# Запуск фронтенда (в ещё одном терминале)
 cd frontend
-npm run dev
+bun run dev
 ```
 
-3. **Доступ к приложению:**
+5. **Доступ к приложению:**
    - Frontend: `http://localhost:5173`
-   - Backend API: `http://localhost:8080`
+   - Backend API: `http://localhost:3000`
    - MongoDB: `mongodb://localhost:27017`
 
 ### 🌍 Продакшен
@@ -143,15 +195,16 @@ docker compose up -d
 
 | Команда | Описание |
 |---------|----------|
+| `bun install` | Установка всех зависимостей (workspace) |
 | `docker compose up` | Запуск продакшен окружения |
 | `docker compose up -d` | Запуск продакшен окружения в фоне |
-| `docker compose -f docker-compose.dev.yml up --build` | Запуск development окружения |
+| `docker compose -f docker-compose.dev.yml up --build` | Запуск development окружения (MongoDB) |
 | `docker compose down` | Остановка всех контейнеров |
 | `cd backend && bun run dev` | Запуск бэкенда в режиме разработки |
 | `cd backend && bun run start` | Запуск бэкенда в продакшен режиме |
-| `cd frontend && npm run dev` | Запуск фронтенда в режиме разработки |
-| `cd frontend && npm run build` | Сборка фронтенда для продакшена |
-| `cd frontend && npm run lint` | Запуск линтера |
+| `cd frontend && bun run dev` | Запуск фронтенда в режиме разработки |
+| `cd frontend && bun run build` | Сборка фронтенда для продакшена |
+| `cd frontend && bun run lint` | Запуск линтера |
 
 ## 🌐 API
 
@@ -161,9 +214,8 @@ docker compose up -d
 |-------|----------|----------|
 | `POST` | `/auth/*` | Аутентификация и регистрация |
 | `GET` | `/users/*` | Работа с пользователями |
-| `GET` | `/tasks/*` | Работа с задачами |
-| `GET` | `/comments/*` | Работа с комментариями |
 | `GET` | `/reviews/*` | Работа с отзывами |
+| `GET` | `/analytics/*` | Аналитика и статистика |
 
 ### Модели данных
 
