@@ -39,7 +39,7 @@ export const userRoutes = (
             return myReviewsDto;
         })
         .delete(
-            "/my/reviews/:id",
+            "/me/reviews/:id",
             async ({ payload, status, params: { id } }) => {
                 if (!payload || !payload.sub)
                     return status(401, {
