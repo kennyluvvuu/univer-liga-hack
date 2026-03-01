@@ -5,16 +5,11 @@ import { User, UserSchema } from "../schemas/user.schema";
 import { users } from "../services/user.service.mock";
 import jwt from "@elysiajs/jwt";
 import UserService from "../services/user.serivce";
+import { authPlugin } from "../plugins/auth.plugin";
 
 export const authRoutes = (userService: UserService) =>
     new Elysia()
-        .use(
-            jwt({
-                name: "jwt",
-                secret: "super-secret",
-                exp: "7d",
-            }),
-        )
+        .use(authPlugin)
         .post(
             "/register",
             async ({ body, jwt }) => {

@@ -5,7 +5,7 @@ export const authPlugin = new Elysia()
     .use(
         jwt({
             name: "jwt",
-            secret: "super-secret",
+            secret: process.env.JWT_SECRET || "do-not-use-that-secret",
             exp: "7d",
         }),
     )
