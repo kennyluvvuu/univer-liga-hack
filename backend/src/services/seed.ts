@@ -115,12 +115,12 @@ export async function seedDatabase() {
 
         // Создаем mock-отзывы
         const mockComments = [
-            // Отзывы для Ивана Петрова (createdUsers[0]) - смешанные (score 2-4)
+            // Отзывы для Ивана Петрова (createdUsers[0]) - смешанные (score 4-8)
             {
                 recipientId: createdUsers[0]._id,
                 senderId: createdUsers[2]._id, // Алексей
                 taskId: createdTasks[0]._id,
-                score: 3,
+                score: 6,
                 comment: "Иван хорошо организовал процесс, но сроки были немного сдвинуты.",
                 tags: [
                     { title: "Хорошее ТЗ", type: "positive" as const },
@@ -132,7 +132,7 @@ export async function seedDatabase() {
                 recipientId: createdUsers[0]._id,
                 senderId: createdUsers[3]._id, // Елена
                 taskId: createdTasks[1]._id,
-                score: 4,
+                score: 8,
                 comment: "Чётко поставлена задача, легко было работать по ТЗ.",
                 tags: [
                     { title: "Хорошее ТЗ", type: "positive" as const },
@@ -144,7 +144,7 @@ export async function seedDatabase() {
                 recipientId: createdUsers[0]._id,
                 senderId: createdUsers[4]._id, // Дмитрий
                 taskId: createdTasks[0]._id,
-                score: 2,
+                score: 4,
                 comment: "Задача была составлена нечётко, пришлось несколько раз уточнять детали.",
                 tags: [
                     { title: "Отказал без причины", type: "negative" as const }
@@ -152,12 +152,12 @@ export async function seedDatabase() {
                 createdAt: new Date("2025-12-05")
             },
 
-            // Отзывы для Алексея Смирнова (createdUsers[2]) - в основном позитив (score 4-5)
+            // Отзывы для Алексея Смирнова (createdUsers[2]) - в основном позитив (score 8-10)
             {
                 recipientId: createdUsers[2]._id,
                 senderId: createdUsers[0]._id, // Иван
                 taskId: createdTasks[3]._id,
-                score: 5,
+                score: 10,
                 comment: "Алексей отлично реализовал API, всё работает как часы!",
                 tags: [
                     { title: "Высокая экспертность", type: "positive" as const },
@@ -169,7 +169,7 @@ export async function seedDatabase() {
                 recipientId: createdUsers[2]._id,
                 senderId: createdUsers[3]._id, // Елена
                 taskId: createdTasks[4]._id,
-                score: 5,
+                score: 10,
                 comment: "Быстро исправил все баги, очень помог с интеграцией.",
                 tags: [
                     { title: "Помог в дедлайн", type: "positive" as const },
@@ -181,7 +181,7 @@ export async function seedDatabase() {
                 recipientId: createdUsers[2]._id,
                 senderId: createdUsers[4]._id, // Дмитрий
                 taskId: createdTasks[3]._id,
-                score: 4,
+                score: 8,
                 comment: "Качественная работа, небольшие замечания были устранены оперативно.",
                 tags: [
                     { title: "Высокая экспертность", type: "positive" as const }
@@ -189,12 +189,12 @@ export async function seedDatabase() {
                 createdAt: new Date("2025-11-15")
             },
 
-            // Отзывы для Елены Козловой (createdUsers[3]) - нейтрально (score 3-4)
+            // Отзывы для Елены Козловой (createdUsers[3]) - нейтрально (score 6-8)
             {
                 recipientId: createdUsers[3]._id,
                 senderId: createdUsers[0]._id, // Иван
                 taskId: createdTasks[5]._id,
-                score: 4,
+                score: 8,
                 comment: "Дизайн получился современным и удобным, команда довольна.",
                 tags: [
                     { title: "Доброжелательность", type: "positive" as const },
@@ -206,7 +206,7 @@ export async function seedDatabase() {
                 recipientId: createdUsers[3]._id,
                 senderId: createdUsers[2]._id, // Алексей
                 taskId: createdTasks[5]._id,
-                score: 3,
+                score: 6,
                 comment: "Макеты хорошие, но потребовалось несколько итераций доработки.",
                 tags: [
                     { title: "Хорошее ТЗ", type: "positive" as const }
@@ -214,12 +214,12 @@ export async function seedDatabase() {
                 createdAt: new Date("2025-12-10")
             },
 
-            // Отзывы для Дмитрия Новикова (createdUsers[4]) - немного негатив (score 2-3)
+            // Отзывы для Дмитрия Новикова (createdUsers[4]) - немного негатив (score 4-6)
             {
                 recipientId: createdUsers[4]._id,
                 senderId: createdUsers[0]._id, // Иван
                 taskId: createdTasks[6]._id,
-                score: 2,
+                score: 4,
                 comment: "Анализ был поверхностным, рекомендации не помогли улучшить метрики.",
                 tags: [
                     { title: "Неверная рекомендация", type: "negative" as const },
@@ -231,7 +231,7 @@ export async function seedDatabase() {
                 recipientId: createdUsers[4]._id,
                 senderId: createdUsers[2]._id, // Алексей
                 taskId: createdTasks[6]._id,
-                score: 3,
+                score: 6,
                 comment: "Данные собраны, но выводы могли бы быть более глубокими.",
                 tags: [
                     { title: "Грубость", type: "negative" as const }
