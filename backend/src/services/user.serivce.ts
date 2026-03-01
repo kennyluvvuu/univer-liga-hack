@@ -11,7 +11,7 @@ export default class UserService {
             name: user.name,
             email: user.email,
             role: user.role,
-            position: user.position,
+            department: user.department,
             hash: await Bun.password.hash(user.password),
         });
 
@@ -32,7 +32,8 @@ export default class UserService {
         return {
             id: user._id.toString(),
             email: user.email,
-            position: user.position,
+            name: user.name,
+            department: user.department,
             role: user.role,
             avatar: user.avatar,
             id_crm: user.id_crm,

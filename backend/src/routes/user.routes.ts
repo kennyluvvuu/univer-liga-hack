@@ -21,6 +21,43 @@ export const userRoutes = (
             if (!userData) return status(404, "Not Found");
             return userData;
         })
+        .get("/me/reviews", async ({ payload, status }) => {
+            if (!payload || !payload.sub)
+                return status(401, {
+                    message: "Unauthorized",
+                });
+            const myReviews = await commentService.getBySenderId(payload.sub);
+            const myReviewsDto = await Promise.all(
+                myReviews.map(async (r) => {
+                    const recipient = await userService.getById(r.recipientId);
+                    return {
+                        ...r,
+                        recipientName: recipient?.name ?? "Неизвестно",
+                    };
+                }),
+            );
+            return myReviewsDto;
+        })
+        .delete(
+            "/my/reviews/:id",
+            async ({ payload, status, params: { id } }) => {
+                if (!payload || !payload.sub)
+                    return status(401, {
+                        message: "Unauthorized",
+                    });
+
+                const review = await commentService.getById(id);
+                if (!review) return status(404, { message: "Отзыв не найден" });
+
+                if (review.senderId !== payload.sub)
+                    return status(403, {
+                        message: "Нельзя удалить чужой отзыв",
+                    });
+
+                await commentService.delete(id);
+                return status(200);
+            },
+        )
         .get("/tasks", async ({ payload, status }) => {
             if (!payload || !payload.sub)
                 return status(401, {
@@ -31,13 +68,22 @@ export const userRoutes = (
                 return status(404, { message: "У вас нет задач" });
             return userTasks;
         })
+        .get("/departaments", async ({ payload, status }) => {
+            if (!payload || !payload.sub)
+                return status(401, {
+                    message: "Unauthorized",
+                });
+            const users = await userService.list();
+            const departaments = [...new Set(users.map((u) => u.department))];
+            return departaments;
+        })
         .get("/employees", async ({ payload, status }) => {
             if (!payload || !payload.sub)
                 return status(401, {
                     message: "Unauthorized",
                 });
             return (await userService.list()).filter(
-                (u) => u.id !== payload.sub || u.role !== "director",
+                (u) => u.id !== payload.sub && u.role !== "director",
             );
         })
         .get("/employees/:id", async ({ payload, status, params: { id } }) => {
@@ -80,7 +126,7 @@ export const userRoutes = (
                         message: "Задача по отзыву не найдена",
                     });
 
-                if (userTask.userId !== payload.sub) {
+                if (userTask.userId.toString() !== payload.sub.toString()) {
                     return status(403, {
                         message: "Задача не принадлежит этому сотруднику",
                     });
