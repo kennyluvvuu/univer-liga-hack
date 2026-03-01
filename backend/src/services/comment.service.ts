@@ -72,6 +72,11 @@ export default class CommentService {
         };
     }
 
+    async existsBySenderAndTask(senderId: string, taskId: string): Promise<boolean> {
+        const review = await CommentModel.findOne({ senderId, taskId }).lean();
+        return review !== null;
+    }
+
     async delete(id: string) {
         const result = await CommentModel.deleteOne({ _id: id });
         return result.deletedCount > 0 ? true : false;
