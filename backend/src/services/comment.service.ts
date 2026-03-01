@@ -26,33 +26,50 @@ export default class CommentService {
 
     async getByRecipientId(recipientId: string) {
         const commentsList = await CommentModel.find({ recipientId }).lean();
-        return commentsList.map(({ _id, createdAt, updatedAt, ...c }) => ({
+        return commentsList.map(({ _id, createdAt, updatedAt, recipientId, senderId, taskId, ...c }) => ({
             ...c,
             id: _id.toString(),
+            recipientId: recipientId.toString(),
+            senderId: senderId.toString(),
+            taskId: taskId.toString(),
             date: createdAt.toISOString(),
         }));
     }
 
     async getBySenderId(senderId: string) {
         const commentsList = await CommentModel.find({ senderId }).lean();
-        return commentsList.map(({ _id, createdAt, updatedAt, ...c }) => ({
+        return commentsList.map(({ _id, createdAt, updatedAt, recipientId, senderId, taskId, ...c }) => ({
             ...c,
             id: _id.toString(),
+            recipientId: recipientId.toString(),
+            senderId: senderId.toString(),
+            taskId: taskId.toString(),
             date: createdAt.toISOString(),
         }));
     }
 
     async getByTaskId(taskId: string) {
         const commentsList = await CommentModel.find({ taskId }).lean();
-        return commentsList.map(({ _id, createdAt, updatedAt, ...c }) => ({
+        return commentsList.map(({ _id, createdAt, updatedAt, recipientId, senderId, taskId: tid, ...c }) => ({
             ...c,
             id: _id.toString(),
+            recipientId: recipientId.toString(),
+            senderId: senderId.toString(),
+            taskId: tid.toString(),
             date: createdAt.toISOString(),
         }));
     }
 
     async getById(id: string) {
-        return CommentModel.findById(id).lean();
+        const comment = await CommentModel.findById(id).lean();
+        if (!comment) return null;
+        return {
+            ...comment,
+            id: comment._id.toString(),
+            recipientId: comment.recipientId.toString(),
+            senderId: comment.senderId.toString(),
+            taskId: comment.taskId.toString(),
+        };
     }
 
     async delete(id: string) {
