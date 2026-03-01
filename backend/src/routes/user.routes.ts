@@ -21,6 +21,16 @@ export const userRoutes = (
             if (!userData) return status(404, "Not Found");
             return userData;
         })
+        .get("/my/reviews", async ({ payload, status }) => {
+            if (!payload || !payload.sub)
+                return status(401, {
+                    message: "Unauthorized",
+                });
+            const myReviews = await commentService.getBySenderId(payload.sub);
+            if (myReviews.length === 0)
+                return status(404, { message: "Нет отзывов" });
+            return myReviews;
+        })
         .get("/tasks", async ({ payload, status }) => {
             if (!payload || !payload.sub)
                 return status(401, {
