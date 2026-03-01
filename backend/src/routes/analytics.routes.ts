@@ -20,6 +20,11 @@ export const analyticsRoutes = (userService: UserService) =>
                 department?: string;
             };
 
+            const effectiveEmployeeId =
+                employeeId === "all" ? undefined : employeeId;
+            const effectiveDepartament =
+                department === "all" ? undefined : department;
+
             // Строим фильтр
             const filter: Record<string, unknown> = {};
             if (from || to) {
@@ -31,14 +36,16 @@ export const analyticsRoutes = (userService: UserService) =>
                     (filter.createdAt as Record<string, unknown>).$lte =
                         new Date(to);
             }
-            if (employeeId) filter.recipientId = employeeId;
+            if (effectiveEmployeeId) filter.recipientId = effectiveEmployeeId;
 
             const comments = await CommentModel.find(filter).lean();
 
             // Если фильтр по department — нужно знать кто в этом отделе
             let allowedUserIds: Set<string> | null = null;
-            if (department) {
-                const deptUsers = await UserModel.find({ department }).lean();
+            if (effectiveDepartament) {
+                const deptUsers = await UserModel.find({
+                    department: effectiveDepartament,
+                }).lean();
                 allowedUserIds = new Set(
                     deptUsers.map((u) => u._id.toString()),
                 );
@@ -50,11 +57,11 @@ export const analyticsRoutes = (userService: UserService) =>
                   )
                 : comments;
 
-            // Хелпер для подсчёта (5-балльная система: >= 4 позитив, <= 2 негатив)
+            // Хелпер для подсчёта (10-балльная система: >= 7 позитив, <= 4 негатив)
             const calcStats = (items: typeof filtered) => {
                 const total = items.length;
-                const positive = items.filter((c) => c.score >= 4).length;
-                const negative = items.filter((c) => c.score <= 2).length;
+                const positive = items.filter((c) => c.score >= 7).length;
+                const negative = items.filter((c) => c.score <= 4).length;
                 const neutral = total - positive - negative;
                 const index =
                     total > 0
@@ -190,76 +197,4 @@ export const analyticsRoutes = (userService: UserService) =>
                 .sort((a, b) => b.index - a.index);
 
             return { summary, byMonth, byTag, byEmployee, byDepartment };
-        })
-
-        // Блок 6 — сырые отзывы с фильтрами и пагинацией
-        .get("/analytics/reviews", async ({ payload, status, query }) => {
-            if (!payload || !payload.sub) return status(401);
-            const currentUser = await userService.getById(payload.sub);
-            if (currentUser?.role !== "director")
-                return status(403, { message: "Только для руководителя" });
-
-            const {
-                employeeId,
-                tag,
-                from,
-                to,
-                type,
-                page = "1",
-                limit = "20",
-            } = query as {
-                employeeId?: string;
-                tag?: string;
-                from?: string;
-                to?: string;
-                type?: "positive" | "negative" | "neutral";
-                page?: string;
-                limit?: string;
-            };
-
-            const filter: Record<string, unknown> = {};
-            if (employeeId) filter.recipientId = employeeId;
-            if (from || to) {
-                filter.createdAt = {};
-                if (from)
-                    (filter.createdAt as Record<string, unknown>).$gte =
-                        new Date(from);
-                if (to)
-                    (filter.createdAt as Record<string, unknown>).$lte =
-                        new Date(to);
-            }
-            if (type === "positive") filter.score = { $gte: 4 };
-            if (type === "negative") filter.score = { $lte: 2 };
-            if (type === "neutral") filter.score = { $gt: 2, $lt: 4 };
-            if (tag) filter["tags.title"] = tag;
-
-            const pageNum = parseInt(page);
-            const limitNum = parseInt(limit);
-            const skip = (pageNum - 1) * limitNum;
-            const [reviews, total] = await Promise.all([
-                CommentModel.find(filter)
-                    .sort({ createdAt: -1 })
-                    .skip(skip)
-                    .limit(limitNum)
-                    .lean(),
-                CommentModel.countDocuments(filter),
-            ]);
-
-            // Скрываем senderId как требует ТЗ
-            const sanitized = reviews.map(({ senderId, _id, ...r }) => ({
-                ...r,
-                id: _id.toString(),
-                recipientId: r.recipientId.toString(),
-                taskId: r.taskId.toString(),
-            }));
-
-            return {
-                reviews: sanitized,
-                pagination: {
-                    page: pageNum,
-                    limit: limitNum,
-                    total,
-                    pages: Math.ceil(total / limitNum),
-                },
-            };
         });
