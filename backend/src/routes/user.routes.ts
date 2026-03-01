@@ -39,7 +39,7 @@ export const userRoutes = (
             return myReviewsDto;
         })
         .delete(
-            "/my/reviews/:id",
+            "/me/reviews/:id",
             async ({ payload, status, params: { id } }) => {
                 if (!payload || !payload.sub)
                     return status(401, {
@@ -132,10 +132,11 @@ export const userRoutes = (
                     });
                 }
 
-                const avaliableReview = await commentService.getByTaskId(
+                const alreadyReviewed = await commentService.existsBySenderAndTask(
+                    payload.sub,
                     body.taskId,
                 );
-                if (avaliableReview.length > 0)
+                if (alreadyReviewed)
                     return status(409, {
                         message: "Вы уже оставили отзыв по этой задаче",
                     });
