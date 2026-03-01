@@ -30,9 +30,11 @@ export const userRoutes = (
             const myReviewsDto = await Promise.all(
                 myReviews.map(async (r) => {
                     const recipient = await userService.getById(r.recipientId);
+                    const task = await tasksService.getById(r.taskId);
                     return {
                         ...r,
                         recipientName: recipient?.name ?? "Неизвестно",
+                        taskTitle: task?.title ?? "Неизвестно",
                     };
                 }),
             );
@@ -156,11 +158,31 @@ export const userRoutes = (
                     return status(401, {
                         message: "Unauthorized",
                     });
+                const currentUser = await userService.getById(payload.sub);
+                if (currentUser?.role !== "director")
+                    return status(403, {
+                        message: "Вам не разрешено это делать",
+                    });
                 const userReviews = await commentService.getByRecipientId(id);
                 if (userReviews.length === 0)
                     return status(404, {
                         message: "Нет отзывов",
                     });
-                return userReviews;
+                const userReviewsDto = await Promise.all(
+                    userReviews.map(async (r) => {
+                        const sender = await userService.getById(r.senderId);
+                        const recipient = await userService.getById(
+                            r.recipientId,
+                        );
+                        const task = await tasksService.getById(r.taskId);
+                        return {
+                            ...r,
+                            senderName: sender?.name ?? "Неизвестно",
+                            recipientName: recipient?.name ?? "Неизвестно",
+                            taskTitle: task?.title ?? "Неизвестно",
+                        };
+                    }),
+                );
+                return userReviewsDto;
             },
         );
