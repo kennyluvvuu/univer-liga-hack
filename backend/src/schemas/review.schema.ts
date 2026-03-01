@@ -6,7 +6,6 @@ export const ReviewSchema = t.Object({
     taskId: t.String(),
     score: t.Number(),
     comment: t.String(),
-    anon: t.Boolean(),
     tags: t.Array(t.Object({ title: t.String(), type: t.String() })),
 });
 
@@ -17,7 +16,6 @@ export const ReviewSchemaResponce = t.Object({
     taskId: t.String(),
     score: t.Number(),
     comment: t.String(),
-    anon: t.Boolean(),
     tags: t.Array(t.Object({ title: t.String(), type: t.String() })),
 });
 
@@ -28,7 +26,6 @@ export const ReviewPreviewSchemaResponce = t.Object({
     taskId: t.String(),
     score: t.Number(),
     comment: t.String(),
-    anon: t.Boolean(),
 });
 
 export type Review = Static<typeof ReviewSchema>;
