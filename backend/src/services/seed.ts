@@ -16,7 +16,7 @@ export async function seedDatabase() {
             {
                 name: "Иван Петров",
                 role: "employee" as const,
-                position: "Менеджер",
+                department: "Менеджмент",
                 email: "ivan@example.com",
                 id_crm: "CRM001",
                 avatar: "https://i.pravatar.cc/150?u=ivan",
@@ -25,7 +25,7 @@ export async function seedDatabase() {
             {
                 name: "Мария Сидорова",
                 role: "director" as const,
-                position: "Генеральный директор",
+                department: "Руководство",
                 email: "maria@example.com",
                 id_crm: "CRM002",
                 avatar: "https://i.pravatar.cc/150?u=maria",
@@ -34,7 +34,7 @@ export async function seedDatabase() {
             {
                 name: "Алексей Смирнов",
                 role: "employee" as const,
-                position: "Разработчик",
+                department: "Разработка",
                 email: "alexey@example.com",
                 id_crm: "CRM003",
                 avatar: "https://i.pravatar.cc/150?u=alexey",
@@ -43,7 +43,7 @@ export async function seedDatabase() {
             {
                 name: "Елена Козлова",
                 role: "employee" as const,
-                position: "Дизайнер",
+                department: "Дизайн",
                 email: "elena@example.com",
                 id_crm: "CRM004",
                 avatar: "https://i.pravatar.cc/150?u=elena",
@@ -52,7 +52,7 @@ export async function seedDatabase() {
             {
                 name: "Дмитрий Новиков",
                 role: "employee" as const,
-                position: "Аналитик",
+                department: "Аналитика",
                 email: "dmitry@example.com",
                 id_crm: "CRM005",
                 avatar: "https://i.pravatar.cc/150?u=dmitry",

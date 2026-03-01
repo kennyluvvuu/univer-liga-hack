@@ -1,4 +1,4 @@
-import Elysia from "elysia";
+import { t, Elysia } from "elysia";
 import { randomUUIDv5 } from "bun";
 import { status } from "elysia";
 import { User, UserSchema } from "../schemas/user.schema";
@@ -48,6 +48,9 @@ export const authRoutes = (userService: UserService) =>
                 };
             },
             {
-                body: UserSchema,
+                body: t.Object({
+                    email: t.String(),
+                    password: t.String(),
+                }),
             },
         );

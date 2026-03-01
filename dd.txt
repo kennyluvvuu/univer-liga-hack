@@ -1,0 +1,5 @@
+ivan@example.com / password123
+   maria@example.com / director123
+   alexey@example.com / dev12345
+   elena@example.com / design123
+   dmitry@example.com / analyst123

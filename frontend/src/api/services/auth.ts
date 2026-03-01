@@ -1,16 +1,5 @@
 import {api} from "../axios.ts";
-import type {CredentialsI} from "../../types/types.ts";
-
-export interface UserI {
-    id: string
-    name: string
-    role: "employee" | "director"
-    postition: string
-    email: string
-    id_CRM: string
-    avatar: string
-    tasks: string[]
-}
+import type { CredentialsI, UserI} from "../../types/types.ts";
 
 export interface AuthResponse {
     token: string
