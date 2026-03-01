@@ -1,4 +1,3 @@
-import { AnalyticsI } from './types';
 export type UserRoleI = "employee" | "director"
 
 export type UserAvatarI = string | null

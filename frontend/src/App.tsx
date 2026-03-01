@@ -8,6 +8,9 @@ import ProtectedRoute from "./ProtectedRoute.tsx";
 import ProfileScreen from './screens/ProfileScreen.tsx';
 import LoginScreen from './screens/LoginScreen.tsx';
 import AnalyticsScreen from './screens/AnalyticsScreen.tsx';
+import EmployeesScreen from './screens/EmployeesScreen.tsx';
+import EmployeeReviewsScreen from './screens/EmployeeReviewsScreen.tsx';
+import DirectorRoute from './DirectorRoute.tsx';
 
 function App() {
   return (
@@ -15,14 +18,18 @@ function App() {
           <Routes>
               <Route path="/" element={<Layout />}>
                   <Route path="auth" element={<LoginScreen />} />
-                  
+
                   <Route element={<ProtectedRoute />}>
                     <Route index element={<MainScreen />} />
                     <Route path="user/:id" element={<PostScreen />} />
                     <Route path='profile' element={<ProfileScreen />} />
                   </Route>
 
-                  <Route path='director' element={<AnalyticsScreen />} />
+                  <Route element={<DirectorRoute />}>
+                    <Route path='director' element={<AnalyticsScreen />} />
+                    <Route path='employees' element={<EmployeesScreen />} />
+                    <Route path='employees/:id' element={<EmployeeReviewsScreen />} />
+                  </Route>
 
                   <Route path="*" element={<NotFoundScreen />} />
               </Route>
