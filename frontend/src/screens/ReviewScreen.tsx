@@ -49,14 +49,6 @@ export default memo(function ReviewScreen() {
 
         const tags: ReviewTagI[] = ALL_TAGS.filter((tag) => selectedTagIds.includes(tag.title))
         .map(tag => ({ title: tag.title, type: tag.type }));
-        console.log({
-            recipientId,
-            senderId: currentUser.id,
-            taskId: selectedTaskId,
-            score: score[0],
-            tags,
-            comment: comment.trim()
-        });
         sendReview({
             recipientId,
             senderId: currentUser.id,
@@ -65,6 +57,7 @@ export default memo(function ReviewScreen() {
             tags,
             comment: comment.trim()
         });
+        setSelectedTaskId("")
     };
 
     if (usersLoading) return <div className="p-8 text-center animate-pulse text-muted-foreground">Загрузка...</div>;

@@ -1,8 +1,9 @@
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import useToastContext from "./context/useToastContext";
 import { reviewApi } from "@/api/services/review";
 
 export const useMutationDeleteMyReview = () => {
+    const queryClient = useQueryClient();
     const { success, error } = useToastContext();
 
     return useMutation({
@@ -10,6 +11,7 @@ export const useMutationDeleteMyReview = () => {
             await reviewApi.deleteMyReview(reviewId);
         },
         onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["my-reviews"] })
             success("Отзыв успешно удален!");
         },
         onError: () => {

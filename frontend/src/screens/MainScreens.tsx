@@ -1,5 +1,5 @@
 import { memo, useState } from "react";
-import PostListComponent from "../components/UserListComponent.tsx";
+import UserListComponent from "../components/UserListComponent.tsx";
 import SearchComponent from "@/components/SearchComponent.tsx";
 
 export default memo(function MainScreen() {
@@ -8,7 +8,7 @@ export default memo(function MainScreen() {
     return (
         <>
             <SearchComponent setSearchData={setSearchData} />
-            <PostListComponent searchData={searchData} />
+            <UserListComponent searchData={searchData} />
         </>
     )
 })
