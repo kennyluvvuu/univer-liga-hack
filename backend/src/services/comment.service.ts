@@ -20,8 +20,8 @@ export default class CommentService {
             score: newComment.score,
             comment: newComment.comment,
             tags: newComment.tags,
-            createdAt: newComment.createdAt,
-            updatedAt: newComment.updatedAt,
+            createdAt: newComment.createdAt.toISOString(),
+            updatedAt: newComment.updatedAt.toISOString(),
         };
     }
 
@@ -30,8 +30,8 @@ export default class CommentService {
         return commentsList.map(({ _id, createdAt, updatedAt, ...c }) => ({
             ...c,
             id: _id.toString(),
-            createdAt,
-            updatedAt,
+            createdAt: createdAt.toISOString(),
+            updatedAt: updatedAt.toISOString(),
         }));
     }
 
@@ -40,8 +40,8 @@ export default class CommentService {
         return commentsList.map(({ _id, createdAt, updatedAt, ...c }) => ({
             ...c,
             id: _id.toString(),
-            createdAt,
-            updatedAt,
+            createdAt: createdAt.toISOString(),
+            updatedAt: updatedAt.toISOString(),
         }));
     }
 
@@ -50,8 +50,8 @@ export default class CommentService {
         return commentsList.map(({ _id, createdAt, updatedAt, ...c }) => ({
             ...c,
             id: _id.toString(),
-            createdAt,
-            updatedAt,
+            createdAt: createdAt.toISOString(),
+            updatedAt: updatedAt.toISOString(),
         }));
     }
 
