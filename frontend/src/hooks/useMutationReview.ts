@@ -15,7 +15,7 @@ export const useMutationReview = () => {
         },
         onSuccess: () => {
             success("Отзыв успешно опубликован!");
-            queryClient.invalidateQueries({ queryKey: ["reviews"] });
+            queryClient.invalidateQueries({ queryKey: ["my-reviews"] });
         },
         onError: (err) => {
             if (isAxiosError(err)) {
