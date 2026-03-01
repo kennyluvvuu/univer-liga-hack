@@ -51,8 +51,8 @@ export const authRoutes = (userService: UserService) =>
                 return {
                     token: token,
                     user: {
+                        ...validUser,
                         id: validUser._id.toString(),
-                        email: validUser.email,
                     },
                 };
             },
