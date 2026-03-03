@@ -19,6 +19,18 @@ export default class TaskService {
         }));
     }
 
+    async getByIds(ids: string[]) {
+        const tasksList = await TaskModel.find({
+            _id: { $in: ids },
+        }).lean();
+
+        return tasksList.map(({ _id, userId, ...t }) => ({
+            ...t,
+            id: _id.toString(),
+            userId: userId.toString(),
+        }));
+    }
+
     async getByUserId(userId: string) {
         const tasksList = await TaskModel.find({ userId }).lean();
         return tasksList.map(({ __v, _id, ...t }) => ({

@@ -26,6 +26,17 @@ export default class UserService {
         }));
     }
 
+    async getByIds(ids: string[]): Promise<UserResponce[]> {
+        const usersList = await UserModel.find({
+            _id: { $in: ids },
+        }).lean();
+
+        return usersList.map(({ hash, __v, _id, ...u }) => ({
+            ...u,
+            id: _id.toString(),
+        }));
+    }
+
     async getById(id: string): Promise<UserResponce | null> {
         const user = await UserModel.findById(id).lean();
         if (!user) return null;
